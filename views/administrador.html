@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saborytec | Panel Administrador</title>
+    <link rel="stylesheet" href="../css/administrador.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body class="overlay img">
+
+            <header class="navbar">
+        <div class="logo">SABORYTEC</div>
+        <nav class="nav-links">
+            <a href="administrador.html">ADMINISTRADOR</a>
+        </nav>
+        <button class="cart-btn" onclick="window.location.href='../index.html'">CERRAR SESION</button>
+    </header>
+
+    <div class="bg-text-container">
+        <h1 class="bg-text-giant">ADMIN</h1>
+    </div>
+
+    <main class="main-content container-centered">
+        <div class="container">
+            <h1 class="titulo">Panel de Administrador <span>General</span></h1>
+
+            <section class="tarjetas-grid">
+                <div class="tarjeta">
+                    <div class="tarjeta-info">
+                        <h3>Usuarios Registrados</h3>
+                        <p class="num">128</p>
+                    </div>
+                    <i class='bx bxs-user-detail icon-bg'></i>
+                </div>
+                <div class="tarjeta">
+                    <div class="tarjeta-info">
+                        <h3>Vendedores Activos</h3>
+                        <p class="num">12</p>
+                    </div>
+                    <i class='bx bxs-store-alt icon-bg'></i>
+                </div>
+                <div class="tarjeta">
+                    <div class="tarjeta-info">
+                        <h3>Productos Totales</h3>
+                        <p class="num">248</p>
+                    </div>
+                    <i class='bx bxs-package icon-bg'></i>
+                </div>
+                <div class="tarjeta">
+                    <div class="tarjeta-info">
+                        <h3>Pedidos del Día</h3>
+                        <p class="num">63</p>
+                    </div>
+                    <i class='bx bxs-dish icon-bg'></i>
+                </div>
+            </section>
+
+            <section class="secciones-perfil">
+                <h2 class="subtitulo2">Gestión de Plataforma</h2>
+                
+                <div class="opciones-grid">
+                    <div class="opcion-card" onclick="mostrarSeccion('usuarios')">
+                        <div class="opcion-icon-wrapper"><i class='bx bxs-group'></i></div>
+                        <p>Usuarios</p>
+                    </div>
+                    <div class="opcion-card" onclick="mostrarSeccion('tiendas')">
+                        <div class="opcion-icon-wrapper"><i class='bx bxs-business'></i></div>
+                        <p>Tiendas</p>
+                    </div>
+                    <div class="opcion-card" onclick="mostrarSeccion('productos')">
+                        <div class="opcion-icon-wrapper"><i class='bx bxs-box'></i></div>
+                        <p>Productos</p>
+                    </div>
+                    <div class="opcion-card" onclick="mostrarSeccion('promociones')">
+                        <div class="opcion-icon-wrapper"><i class='bx bxs-megaphone'></i></div>
+                        <p>Promociones</p>
+                    </div>
+                    <div class="opcion-card" onclick="mostrarSeccion('reportes')">
+                        <div class="opcion-icon-wrapper"><i class='bx bxs-bar-chart-alt-2'></i></div>
+                        <p>Reportes</p>
+                    </div>
+                    <div class="opcion-card" onclick="mostrarSeccion('ayuda')">
+                        <div class="opcion-icon-wrapper"><i class='bx bxs-help-circle'></i></div>
+                        <p>Ayuda</p>
+                    </div>
+                </div>
+
+                <div id="contenido-dinamico" class="contenido-dinamico">
+                    <div class="empty-state">
+                        <i class='bx bx-pointer'></i>
+                        <p>Selecciona una opción para gestionar la información.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-line"></div>
+        <p class="footerText">© 2026 <span>Saborytec</span>. Todos los derechos reservados.<br>Autores: FREDY & VICTOR</p>
+    </footer>
+
+    <script src="../js/usuarios/modalUsuarios.js"></script>
+    <script src="../js/usuarios/usuarios.js"></script>
+    <script src="../js/general/admin.js"></script>
+
+</body>
+</html>

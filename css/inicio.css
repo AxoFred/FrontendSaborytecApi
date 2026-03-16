@@ -1,0 +1,444 @@
+/* =========================================
+   VARIABLES Y RESET
+   ========================================= */
+:root {
+    --primary-header: #ffffff;
+    --primary: #376072;
+    --primary-light: #4a7d94;
+    --primary-dark: #1e3a47;
+    --bg-dark: #0a0a0a;
+    --white: #ffffff;
+    --card-bg: rgba(255, 255, 255, 0.03);
+    --text-muted: #888;
+    --glass: rgba(255, 255, 255, 0.05);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-dark);
+    font-family: 'Inter', sans-serif;
+
+}
+
+/* =========================================
+   HEADER / NAVBAR
+   ========================================= */
+/* HEADER */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 50px;
+    z-index: 100;
+
+}
+
+.logo {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2rem;
+    color: var(--primary-header);
+    letter-spacing: 2px;
+}
+
+.nav-links a {
+    color: var(--primary-header);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin: 0 15px;
+}
+
+.cart-btn {
+    background: var(--primary-header);
+    border: none;
+    color: var(--bg-dark);
+    padding: 8px 25px;
+    border-radius: 20px;
+    font-weight: 800;
+    cursor: pointer;
+}
+/*FIN HEADER*/
+/* =========================================
+   FONDO DE PANTALLA (TYPO GIGANTE)
+   ========================================= */
+.bg-text {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.bg-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 30vw;
+    color: var(--white);
+    opacity: 0.1; /* Sutil para no estorbar la lectura */
+    line-height: 1;
+    white-space: nowrap;
+    user-select: none;
+}
+
+/* =========================================
+   CONTENEDOR PRINCIPAL
+   ========================================= */
+.dashboard {
+    position: relative;
+    z-index: 10;
+}
+
+.content-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 5%;
+}
+
+/* =========================================
+   BANNER JUMBO BIENVENIDA
+   ========================================= */
+.welcome-banner.jumbo {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--bg-dark) 100%);
+    border-radius: 32px;
+    padding: 80px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 80px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 50px 100px rgba(0,0,0,0.6);
+}
+
+.banner-info {
+    max-width: 55%;
+}
+
+.banner-info .tag {
+    color: var(--primary-light);
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+.banner-info h2 {
+    font-size: 4rem;
+    font-weight: 800;
+    margin: 15px 0;
+    line-height: 1.1;
+    color: var(--white);
+}
+
+.banner-info p {
+    font-size: 1.1rem;
+    color: #ccc;
+    margin-bottom: 35px;
+    max-width: 480px;
+}
+
+.btn-new-order {
+    background: var(--white);
+    color: var(--bg-dark);
+    border: none;
+    padding: 16px 35px;
+    border-radius: 14px;
+    font-weight: 800;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-new-order:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(255, 255, 255, 0.1);
+    background: var(--primary);
+    color: var(--white);
+}
+
+/* Logo con efecto Glass */
+.glass-logo.large {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(15px);
+    padding: 60px;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.glass-logo.large img {
+    width: 150px;
+    height: auto;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+}
+
+/* =========================================
+   SECCIONES Y GRIDS
+   ========================================= */
+.section-container {
+    margin-bottom: 100px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 40px;
+    border-left: 5px solid var(--primary);
+    padding-left: 20px;
+}
+
+.section-header h3 {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2.5rem;
+    letter-spacing: 2px;
+    color: var(--white);
+}
+
+.view-all {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+/* Tarjetas Destacadas Horizontales */
+.featured-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 40px;
+}
+
+.product-card.hot {
+    display: flex;
+    background: var(--card-bg);
+    border-radius: 30px;
+    padding: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    align-items: center;
+}
+
+.product-card.hot:hover {
+    background: rgba(55, 96, 114, 0.08);
+    border-color: var(--primary);
+    transform: translateY(-10px) scale(1.02);
+}
+
+.product-card.hot .product-img {
+    width: 45%;
+}
+
+.product-card.hot .product-img img {
+    width: 100%;
+    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.5));
+    transform: rotate(-10deg);
+    transition: 0.5s;
+}
+
+.product-card.hot:hover .product-img img {
+    transform: rotate(0deg) scale(1.1);
+}
+
+.product-info {
+    width: 55%;
+    padding-left: 20px;
+}
+
+.category {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--primary);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+.product-info h3 {
+    font-size: 1.6rem;
+    margin: 10px 0;
+    font-weight: 700;
+    color: var(--white  );
+}
+
+.price {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--white);
+    margin-bottom: 20px;
+}
+
+.add-btn {
+    background: transparent;
+    border: 2px solid var(--primary);
+    color: var(--white);
+    padding: 12px 25px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 100%;
+}
+
+.add-btn:hover {
+    background: var(--primary);
+}
+
+/* =========================================
+   TIENDAS EN EL CAMPUS (ESTILO COMPACTO)
+   ========================================= */
+
+/* Contenedor Grid */
+.stores-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Tamaño pequeño y responsivo */
+    gap: 25px;
+    width: 100%;
+}
+
+/* Tarjeta de Tienda Pequeña */
+.store-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    position: relative;
+    backdrop-filter: blur(5px);
+}
+
+.store-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--primary);
+    background: rgba(55, 96, 114, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Imagen de la Tienda */
+.store-img {
+    position: relative;
+    height: 140px; /* Altura reducida */
+    overflow: hidden;
+}
+
+.store-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: 0.5s;
+    filter: brightness(0.7);
+}
+
+.store-card:hover .store-img img {
+    transform: scale(1.1);
+    filter: brightness(1);
+}
+
+/* Badge de Estado (ABIERTO/CERRADO) */
+.store-status {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: #2ecc71; /* Verde para abierto */
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 5px 12px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+/* Estilo para tienda cerrada */
+.store-card.closed {
+    opacity: 0.7;
+}
+
+.store-card.closed .store-status {
+    background: #555; /* Gris para cerrado */
+}
+
+.store-card.closed .store-img img {
+    filter: grayscale(1) brightness(0.5);
+}
+
+/* Contenido de la Tarjeta */
+.store-content {
+    padding: 20px;
+    text-align: left;
+}
+
+.store-badge {
+    font-size: 0.6rem;
+    font-weight: 800;
+    color: var(--primary-light);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.store-content h4 {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    font-weight: 700;
+    color: var(--white);
+}
+
+.store-content p {
+    font-size: 0.8rem;
+    color: #aaa;
+    line-height: 1.4;
+    display: -webkit-box;
+    
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Ajustes para Móvil */
+@media (max-width: 480px) {
+    .stores-grid {
+        grid-template-columns: 1fr;
+    }
+}
+/* =========================================
+   RESPONSIVO (MEDIA QUERIES)
+   ========================================= */
+@media (max-width: 1024px) {
+    .featured-grid { grid-template-columns: 1fr; }
+    .banner-info h2 { font-size: 3rem; }
+}
+
+@media (max-width: 768px) {
+    .navbar { padding: 15px 20px; }
+    .nav-links { display: none; }
+    
+    .welcome-banner.jumbo {
+        flex-direction: column;
+        padding: 40px 25px;
+        text-align: center;
+    }
+    
+    .banner-info { max-width: 100%; margin-bottom: 40px; }
+    .banner-info h2 { font-size: 2.2rem; }
+    
+    .glass-logo.large { padding: 30px; }
+    .glass-logo.large img { width: 100px; }
+    
+    .product-card.hot { flex-direction: column; }
+    .product-card.hot .product-img, 
+    .product-info { width: 100%; padding: 0; text-align: center; }
+    
+    .product-card.hot .product-img img { width: 80%; margin-bottom: 20px; }
+    
+    .bg-title { font-size: 45vw; }
+}

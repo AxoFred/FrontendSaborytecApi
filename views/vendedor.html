@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saborytec | Panel Vendedor</title>
+    <link rel="stylesheet" href="../css/vendedor.css">
+
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body class="overlay img">
+
+    <header class="navbar">
+        <div class="logo">SABORYTEC</div>
+        <nav class="nav-links">
+            <a href="vendedor.html">VENDEDOR</a>
+        </nav>
+        <button class="cart-btn" onclick="window.location.href='../index.html'">CERRAR SESION</button>
+    </header>
+
+    <div class="bg-text-container">
+        <h1 class="bg-text-giant">VENTAS</h1>
+    </div>
+
+    <main class="main-content container-centered">
+        <div class="container">
+            <h1 class="titulo">Panel de <span>Vendedor</span></h1>
+
+            <section class="tarjetas-grid">
+                <div class="tarjeta">
+                    <div class="tarjeta-info">
+                        <h3>Ventas del Día</h3>
+                        <p class="num">$1,240</p>
+                    </div>
+                    <i class='bx bx-trending-up icon-bg'></i>
+                </div>
+                <div class="tarjeta">
+                    <div class="tarjeta-info">
+                        <h3>Pedidos Pendientes</h3>
+                        <p class="num">08</p>
+                    </div>
+                    <i class='bx bx-list-check icon-bg'></i>
+                </div>
+                <div class="tarjeta">
+                    <div class="tarjeta-info">
+                        <h3>Calificación</h3>
+                        <p class="num">4.9</p>
+                    </div>
+                    <i class='bx bxs-star icon-bg'></i>
+                </div>
+            </section>
+
+            <section class="secciones-perfil">
+                <h2 class="subtitulo2">Gestión de Negocio</h2>
+                
+                <div class="opciones-grid">
+                    <div class="opcion-card" onclick="mostrarSeccion('tienda')">
+                        <div class="opcion-icon-wrapper"><i class='bx bxs-store'></i></div>
+                        <p>Tienda</p>
+                    </div>
+
+                    <div class="opcion-card" onclick="mostrarSeccion('productos')">
+                        <div class="opcion-icon-wrapper"><i class='bx bxs-food-menu'></i></div>
+                        <p>Productos</p>
+                    </div>
+
+                    <div class="opcion-card" onclick="mostrarSeccion('pedidos')">
+                        <div class="opcion-icon-wrapper"><i class='bx bxs-receipt'></i></div>
+                        <p>Pedidos</p>
+                    </div>
+
+                    <div class="opcion-card" onclick="mostrarSeccion('horarios')">
+                        <div class="opcion-icon-wrapper"><i class='bx bxs-time-five'></i></div>
+                        <p>Horarios</p>
+                    </div>
+
+                    <div class="opcion-card" onclick="mostrarSeccion('reportes')">
+                        <div class="opcion-icon-wrapper"><i class='bx bxs-chart'></i></div>
+                        <p>Reportes</p>
+                    </div>
+
+                    <div class="opcion-card" onclick="mostrarSeccion('ayuda')">
+                        <div class="opcion-icon-wrapper"><i class='bx bxs-help-circle'></i></div>
+                        <p>Ayuda</p>
+                    </div>
+                </div>
+
+                <div id="contenido-dinamico" class="contenido-dinamico">
+                    <div class="empty-state">
+                        <i class='bx bx-store-alt'></i>
+                        <p>Selecciona una pestaña para administrar tu sucursal en Saborytec.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-line"></div>
+        <p class="footerText">
+            © 2026 <span>Saborytec</span>. Todos los derechos reservados.<br>
+            Panel de Control de Vendedor Autorizado
+        </p>
+    </footer>
+    
+
+    
+    <script src="../js/tiendas/tiendas.js"></script>
+
+    
+    <script src="../js/horarios/horarios.js"></script> 
+    <script src="../js/horarios/modalHorarios.js"></script>
+
+    <script src="../js/general/vendedor.js"></script>
+</body>
+</html>

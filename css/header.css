@@ -1,0 +1,35 @@
+
+/* HEADER */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 50px;
+    z-index: 100;
+}
+
+.logo {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2rem;
+    color: var(--primary);
+    letter-spacing: 2px;
+}
+
+.nav-links a {
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin: 0 15px;
+}
+
+.cart-btn {
+    background: var(--primary);
+    border: none;
+    color: var(--bg-dark);
+    padding: 8px 25px;
+    border-radius: 20px;
+    font-weight: 800;
+    cursor: pointer;
+}
+/*FIN HEADER*/

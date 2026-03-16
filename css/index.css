@@ -1,0 +1,171 @@
+:root {
+    --primary: #ffffff;
+    --bg-dark: #121212;
+    --text-muted: #888;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-dark);
+    font-family: 'Inter', sans-serif;
+    color: white;
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* HEADER */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 50px;
+    z-index: 100;
+
+}
+
+.logo {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2rem;
+    color: var(--primary);
+    letter-spacing: 2px;
+}
+
+.nav-links a {
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin: 0 15px;
+}
+
+.cart-btn {
+    background: var(--primary);
+    border: none;
+    color: var(--bg-dark);
+    padding: 8px 25px;
+    border-radius: 20px;
+    font-weight: 800;
+    cursor: pointer;
+}
+/*FIN HEADER*/
+
+/* Sección Hero */
+.hero {
+    position: relative;
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Texto de fondo masivo */
+.bg-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 30vw; 
+    color: var(--primary);
+    line-height: 0.8;
+    letter-spacing: -5px;
+    pointer-events: none;
+    opacity: 0.9;
+}
+
+/* Wrapper del Producto */
+.product-wrapper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    pointer-events: none; 
+}
+
+.coffee-cup {
+    width: 50vw; 
+    max-width: 500px;
+    transform: rotate(0deg) translateY(0);  
+    filter: drop-shadow(0 20px 50px rgba(0,0,0,0.8));
+    animation: slideFromTop 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    border-radius: 100px; 
+}
+
+.floating-rock {
+    position: absolute;
+    width: 120px;
+    top: 30%;
+    left: 45%;
+    filter: brightness(0.5);
+    animation: float 4s infinite ease-in-out;
+}
+
+/* Etiqueta "NEW" Estilo Sello */
+.new-tag {
+    position: absolute;
+    top: 20%;
+    right: 20%;
+    width: 120px;
+    height: 120px;
+}
+
+.new-tag span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 900;
+    font-size: 1.2rem;
+    color: var(--primary);
+}
+
+/* Animaciones */
+@keyframes slideFromTop {
+    from {
+        transform: translateY(-150px) rotate(0deg); 
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0) rotate(0deg); 
+        opacity: 1;
+    }
+}
+
+/* Bottom UI */
+.hero-bottom {
+    position: absolute;
+    bottom: 50px;
+    width: 100%;
+    padding: 0 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.description {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: #ccc;
+    max-width: 400px;
+}
+
+.order-btn {
+    background: var(--primary);
+    color: var(--bg-dark);
+    border: none;
+    padding: 15px 40px;
+    border-radius: 30px;
+    font-weight: 800;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.order-btn:hover {
+    transform: scale(1.05);
+    background: white;
+}
