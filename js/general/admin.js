@@ -1,70 +1,72 @@
 // ============================================================
-// CONTROL DEL PANEL ADMIN
+// CONTROL DEL PANEL ADMIN - SABORYTEC API (SINCRONIZADO)
 // ============================================================
 
-function mostrarSeccion(seccion){
+const API_BASE = "http://saborytecapi.test/api";
 
-    const contenedor = document.getElementById("contenido-dinamico");
-
-    if(seccion === "usuarios"){
-
-        obtenerUsuarios(); // llama a la API
-
+// Helper universal para peticiones (GET, POST, etc.)
+async function fetchAdmin(endpoint, method = "GET", body = null) {
+    // CORRECCIÓN CLAVE: Cambiamos "token" por "auth_token"
+    const token = localStorage.getItem("auth_token"); 
+    
+    if (!token) {
+        console.warn("No se encontró auth_token. Redirigiendo...");
+        window.location.href = "../index.html"; // Ajustado a tu ruta de login
+        return null;
     }
 
-    else if(seccion === "tiendas"){
+    const config = {
+        method: method,
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        }
+    };
 
-        contenedor.innerHTML = `
-            <div class="empty-state">
-                <i class='bx bxs-business'></i>
-                <p>Módulo de tiendas en desarrollo.</p>
-            </div>
-        `;
+    if (body) config.body = JSON.stringify(body);
 
+    try {
+        const response = await fetch(`${API_BASE}/${endpoint}`, config);
+
+        if (response.status === 401) {
+            console.error("Token rechazado por el servidor.");
+            localStorage.clear();
+            window.location.href = "../index.html";
+            return null;
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error API Admin:", error);
+        return null;
     }
-
-    else if(seccion === "productos"){
-
-        contenedor.innerHTML = `
-            <div class="empty-state">
-                <i class='bx bxs-box'></i>
-                <p>Módulo de productos en desarrollo.</p>
-            </div>
-        `;
-
-    }
-
-    else if(seccion === "promociones"){
-
-        contenedor.innerHTML = `
-            <div class="empty-state">
-                <i class='bx bxs-megaphone'></i>
-                <p>Módulo de promociones en desarrollo.</p>
-            </div>
-        `;
-
-    }
-
-    else if(seccion === "reportes"){
-
-        contenedor.innerHTML = `
-            <div class="empty-state">
-                <i class='bx bxs-bar-chart-alt-2'></i>
-                <p>Módulo de reportes en desarrollo.</p>
-            </div>
-        `;
-
-    }
-
-    else if(seccion === "ayuda"){
-
-        contenedor.innerHTML = `
-            <div class="empty-state">
-                <i class='bx bxs-help-circle'></i>
-                <p>Centro de ayuda próximamente.</p>
-            </div>
-        `;
-
-    }
-
 }
+
+async function mostrarSeccion(seccion) {
+    const contenedor = document.getElementById("contenido-dinamico");
+    if (!contenedor) return;
+
+    if (seccion === "usuarios") {
+        contenedor.innerHTML = `<p>Cargando usuarios...</p>`;
+        const respuesta = await fetchAdmin("usuarios");
+        if (respuesta && typeof obtenerUsuarios === "function") {
+            obtenerUsuarios(Array.isArray(respuesta) ? respuesta : (respuesta.data || []));
+        }
+    } 
+    else if (seccion === "tiendas") {
+        if (typeof cargarTiendasPendientes === "function") {
+            cargarTiendasPendientes(); 
+        }
+    } 
+    else if (seccion === "productos") {
+        if (typeof mostrarSeccionPendientes === "function") {
+            mostrarSeccionPendientes(); 
+        } else {
+            contenedor.innerHTML = `<p style="color:red;">Error: Módulo de productos no cargado.</p>`;
+        }
+    }
+}
+
+window.mostrarSeccion = mostrarSeccion;
+window.fetchAdmin = fetchAdmin;

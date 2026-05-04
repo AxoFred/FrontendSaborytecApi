@@ -1,21 +1,19 @@
 // ============================================================
-// CONFIGURACIÓN DE LOGIN
+// LOGIN SABORYTEC - VERSIÓN COMPATIBLE CON INICIO.JS
 // ============================================================
 
 const form = document.getElementById("loginForm");
-const API_LOGIN = "http://127.0.0.1:8000/api/login";
+const API_LOGIN = "http://saborytecapi.test/api/login"; 
 
 form.addEventListener("submit", async function(e) {
     e.preventDefault();
 
-    // 1. Limpieza previa: Borrar datos de sesiones anteriores para evitar conflictos
-    localStorage.removeItem("usuario");
+    // Limpiamos todo para empezar una sesión limpia
+    localStorage.clear(); 
 
-    // 2. Captura de valores
     const correo = document.getElementById("correo").value.trim();
     const password = document.getElementById("password").value;
 
-    // Validación básica antes de enviar
     if (!correo || !password) {
         alert("Por favor, completa todos los campos.");
         return;
@@ -28,44 +26,55 @@ form.addEventListener("submit", async function(e) {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
             },
-            body: JSON.stringify({
-                correo: correo,
-                password: password
-            })
+            body: JSON.stringify({ correo, password })
         });
 
         const data = await response.json();
 
-        console.log("Respuesta API:", data);
-
         if (data.success) {
-            // 3. GUARDADO: Guardamos el objeto usuario completo como string
-            // Esto incluye ID_usuario, ID_rol, nombre, etc.
-            localStorage.setItem("usuario", JSON.stringify(data.usuario));
+            // Extraemos los datos del usuario (ya sea que vengan como user o usuario)
+            const userData = data.user || data.usuario;
 
-            // 4. DIRECCIONAMIENTO SEGÚN ROL
-            // Usamos Number() para asegurar que la comparación sea numérica
-            const rol = Number(data.usuario.ID_rol);
+            if (!userData) {
+                throw new Error("No se encontraron los datos del usuario en la respuesta");
+            }
 
+            // --- CORRECCIÓN PARA QUE INICIO.JS NO TE SAQUE ---
+            // Guardamos el token con el nombre exacto que busca el resto de la app
+            localStorage.setItem("auth_token", data.token); 
+            
+            // Guardamos el nombre para el saludo "Hola, [Nombre]"
+            localStorage.setItem("user_name", userData.nombre);
+
+            // Guardamos el objeto completo y el ID_rol por seguridad
+            localStorage.setItem("usuario", JSON.stringify(userData));
+
+            const rol = Number(userData.ID_rol);
+            
+            console.log("Login exitoso. Token guardado como 'auth_token'. Rol:", rol);
+
+            // Redirección según rol
             switch (rol) {
                 case 1: // Administrador
-                    window.location.href = "administrador.html";
+                    window.location.href = "../views/administrador.html"; 
                     break;
                 case 2: // Vendedor
-                    window.location.href = "vendedor.html";
+                    window.location.href = "../views/vendedor.html";
                     break;
-                default: // Cliente u otros
-                    window.location.href = "inicio.html";
+                case 3: // Cliente (Estudiantes/Docentes)
+                    window.location.href = "../views/inicio.html";
+                    break;
+                default:
+                    window.location.href = "../index.html";
                     break;
             }
 
         } else {
-            // 5. Manejo de error de credenciales
-            alert(data.message || "Correo o contraseña incorrectos.");
+            alert(data.message || "Credenciales incorrectas.");
         }
 
     } catch (error) {
-        console.error("Error en la conexión:", error);
-        alert("Hubo un problema al conectar con el servidor. Verifica que la API esté encendida.");
+        console.error("Error en login:", error);
+        alert("Error de conexión: " + error.message);
     }
 });

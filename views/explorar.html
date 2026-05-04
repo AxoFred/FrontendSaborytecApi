@@ -1,109 +1,87 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Saborytec | Explorar</title>
     <link rel="stylesheet" href="../css/explorar.css">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
 
     <header class="navbar">
-        <div class="logo">SABORY<span>TEC</span></div>
+        <div class="logo">SABORYTEC</div>
         <nav class="nav-links">
-            <a href="inicio.html">INICIO</a>
-            <a href="#" class="active">EXPLORAR</a>
+            <a href="inicio.html" class="active">INICIO</a>
+            <a href="explorar.html">EXPLORAR</a>
+            <a href="carrito.html">CARRITO</a>
             <a href="#">PEDIDOS</a>
-            <a href="#">CARRITO</a>
         </nav>
-        <div class="user-pill">
-            <div class="avatar"></div>
-            <span>AxoFred</span>
-        </div>
+        <button class="cart-btn"><i class="fas fa-user"></i> CERRAR SESIÓN</button>
     </header>
 
-    <main class="explore-container">
-        <div class="bg-text">
-            <h1 class="bg-title">EXPLORE</h1>
+    <div class="bg-text">
+        <h1 class="bg-title">EXPLORE</h1>
+    </div>
+    <div class="container-food-menu">
+        <div class="menu-header">
+            <h1 class="menu-title">Catálogo de Productos</h1>
+            <p class="menu-subtitle">Explora los mejores sabores de nuestra región</p>
+
+            <form id="filterForm" class="st-filter-panel">
+                <div class="st-search-row">
+                    <div class="st-search-group">
+                        <input type="text" id="inputBuscar" class="st-search-input"
+                            placeholder="¿Qué se te antoja hoy?">
+                        <button type="submit" class="st-btn-search"><i class="fas fa-search"></i></button>
+                    </div>
+
+                    <button type="button" class="st-btn-toggle-filters" onclick="toggleFilters()">
+                        <span>Filtros</span>
+                    </button>
+                </div>
+
+                <div class="st-filters-expandable" id="filtersPanel">
+                    <div class="st-options-group">
+
+                        <!-- Selector de Categorías -->
+                        <div class="st-custom-select" id="selectCategoria">
+                            <div class="st-select-trigger">
+                                <span id="textCategoria">Categorías</span>
+                                <div class="arrow"></div>
+                            </div>
+                            <div class="st-custom-options" id="optionsCategoria">
+                                <!-- Se llena vía API -->
+                            </div>
+                            <input type="hidden" id="hiddenCategoria" name="categoria">
+                        </div>
+
+                        <!-- Selector de Tiendas -->
+                        <div class="st-custom-select" id="selectTienda">
+                            <div class="st-select-trigger">
+                                <span id="textTienda">Tiendas</span>
+                                <div class="arrow"></div>
+                            </div>
+                            <div class="st-custom-options" id="optionsTienda">
+                                <!-- Se llena vía API -->
+                            </div>
+                            <input type="hidden" id="hiddenTienda" name="tienda">
+                        </div>
+
+                        <button type="button" id="btnReset" class="st-btn-reset" style="display:none;">Limpiar</button>
+                    </div>
+                </div>
+            </form>
         </div>
-
-        <div class="content-wrapper">
-            <section class="search-section">
-                <div class="search-bar">
-                    <span class="search-icon">🔍</span>
-                    <input type="text" placeholder="¿Qué se te antoja hoy?">
-                </div>
-            </section>
-
-            <section class="categories-nav">
-                <button class="cat-btn active">Todo</button>
-                <button class="cat-btn">Desayunos</button>
-                <button class="cat-btn">Comida Rápida</button>
-                <button class="cat-btn">Bebidas</button>
-                <button class="cat-btn">Snacks</button>
-                <button class="cat-btn">Postres</button>
-            </section>
-
-            <section class="results-grid">
-                <div class="explore-card">
-                    <div class="card-img">
-                        <img src="https://i.ibb.co/VmqS8M6/iced-coffee-png.png" alt="Producto">
-                    </div>
-                    <div class="card-body">
-                        <span class="store-tag">Central Coffee</span>
-                        <h4>Frappé Mocha</h4>
-                        <div class="card-footer">
-                            <span class="price">$55.00</span>
-                            <button class="mini-add">+</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="explore-card">
-                    <div class="card-img">
-                        <img src="https://pngimg.com/d/burger_sandwich_PNG4135.png" alt="Producto">
-                    </div>
-                    <div class="card-body">
-                        <span class="store-tag">Grill & Go</span>
-                        <h4>Double Cheese</h4>
-                        <div class="card-footer">
-                            <span class="price">$95.00</span>
-                            <button class="mini-add">+</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="explore-card">
-                    <div class="card-img">
-                        <img src="https://pngimg.com/d/cookie_PNG13656.png" alt="Producto">
-                    </div>
-                    <div class="card-body">
-                        <span class="store-tag">Bakery Lab</span>
-                        <h4>Cookie Box</h4>
-                        <div class="card-footer">
-                            <span class="price">$40.00</span>
-                            <button class="mini-add">+</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="explore-card">
-                    <div class="card-img">
-                        <img src="https://i.ibb.co/VmqS8M6/iced-coffee-png.png" alt="Producto">
-                    </div>
-                    <div class="card-body">
-                        <span class="store-tag">Central Coffee</span>
-                        <h4>Latte Art</h4>
-                        <div class="card-footer">
-                            <span class="price">$38.00</span>
-                            <button class="mini-add">+</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
+        <!-- Grid de productos vacío -->
+        <div class="food-grid" id="foodGrid">
+            <p style="text-align: center; color: white; padding: 40px;">Cargando productos...</p>
         </div>
-    </main>
-
+    </div>
+    <script src="../js/navegacion/explorar.js"></script>
 </body>
 </html>

@@ -1,171 +1,196 @@
-:root {
-    --primary: #ffffff;
-    --bg-dark: #121212;
-    --text-muted: #888;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
+/* ===========================
+   GLOBAL
+=========================== */
 body {
-    background-color: var(--bg-dark);
-    font-family: 'Inter', sans-serif;
-    color: white;
-    overflow: hidden;
-    height: 100vh;
+  margin: 0;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  background: url('../Assets/img/rebajado.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: #e0e0e0;
 }
 
-/* HEADER */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 30px 50px;
-    z-index: 100;
 
+/* ===========================
+   HEADER
+=========================== */
+/*header*/
+.header {
+  background-color: #1a1919ff;
+  padding: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #cccccc99;
+  border-top: 1px solid #cccccc99;
+  box-shadow: 0 0 45px 0 #cccccc99;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .logo {
-    font-family: 'Bebas Neue', cursive;
-    font-size: 2rem;
-    color: var(--primary);
-    letter-spacing: 2px;
+  font-size: 0.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 1px;
+  font-weight: bold;
 }
 
-.nav-links a {
-    color: var(--primary);
-    text-decoration: none;
-    font-size: 0.8rem;
-    font-weight: 700;
-    margin: 0 15px;
+.nav a {
+  text-decoration: none;
+  background: none;
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: all 0.25s ease;
+  font-size: 13px;
 }
 
-.cart-btn {
-    background: var(--primary);
-    border: none;
-    color: var(--bg-dark);
-    padding: 8px 25px;
-    border-radius: 20px;
-    font-weight: 800;
-    cursor: pointer;
-}
-/*FIN HEADER*/
-
-/* Sección Hero */
-.hero {
-    position: relative;
-    height: 80vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.nav a:hover {
+  border-bottom: 3px solid #fff;
+  color: #fff;
 }
 
-/* Texto de fondo masivo */
-.bg-title {
-    font-family: 'Bebas Neue', cursive;
-    font-size: 30vw; 
-    color: var(--primary);
-    line-height: 0.8;
-    letter-spacing: -5px;
-    pointer-events: none;
-    opacity: 0.9;
+.login-btn {
+  text-decoration: none;
+  background: none;
+  color: #fdfdfd;
+  border-bottom: 1px solid #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: color 0.25s ease;
 }
 
-/* Wrapper del Producto */
-.product-wrapper {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10;
-    pointer-events: none; 
+.login-btn:hover {
+  border: 0;
+  border-bottom: 3px solid #fff;
+  color: #fff;
+}
+/*fin header*/
+
+
+/* ===========================
+   SCROLL + BIENVENIDA
+=========================== */
+.scroll {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
-.coffee-cup {
-    width: 50vw; 
-    max-width: 500px;
-    transform: rotate(0deg) translateY(0);  
-    filter: drop-shadow(0 20px 50px rgba(0,0,0,0.8));
-    animation: slideFromTop 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    border-radius: 100px; 
+.logob {
+  width: 260px;
+  height: 260px;
+  border-radius: 25px;
+  margin-top: 30px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.6);
 }
 
-.floating-rock {
-    position: absolute;
-    width: 120px;
-    top: 30%;
-    left: 45%;
-    filter: brightness(0.5);
-    animation: float 4s infinite ease-in-out;
+.titulo {
+  font-size: 26px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 5px 0;
+  text-shadow: 0 2px 10px #000;
 }
 
-/* Etiqueta "NEW" Estilo Sello */
-.new-tag {
-    position: absolute;
-    top: 20%;
-    right: 20%;
-    width: 120px;
-    height: 120px;
+.botonIniciar {
+  background-color: #376072;
+  padding: 12px 30px;
+  border-radius: 12px;
+  width: 260px;
+  border: none;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: 0.3s ease;
+  box-shadow: 0 4px 12px #00000070;
 }
 
-.new-tag span {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-weight: 900;
-    font-size: 1.2rem;
-    color: var(--primary);
+.botonIniciar:hover {
+  transform: scale(1.04);
+  box-shadow: 0 6px 18px #00000080;
 }
 
-/* Animaciones */
-@keyframes slideFromTop {
-    from {
-        transform: translateY(-150px) rotate(0deg); 
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0) rotate(0deg); 
-        opacity: 1;
-    }
+.botonText {
+  color: #fff;
+  font-size: 17px;
+  font-weight: bold;
+  letter-spacing: 1px;
 }
 
-/* Bottom UI */
-.hero-bottom {
-    position: absolute;
-    bottom: 50px;
-    width: 100%;
-    padding: 0 50px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
+.modoInvitado {
+  margin-top: 15px;
+  font-size: 18px;
+  color: #ffffff;
+  max-width: 80%;
+  line-height: 1.4;
 }
 
-.description {
-    font-size: 0.9rem;
-    line-height: 1.4;
-    color: #ccc;
-    max-width: 400px;
+
+/* ===========================
+   CARDS - FEATURES
+=========================== */
+.container {
+  max-width: 1200px;
+  margin: 17px auto;
+  padding: 0rem;
 }
 
-.order-btn {
-    background: var(--primary);
-    color: var(--bg-dark);
-    border: none;
-    padding: 15px 40px;
-    border-radius: 30px;
-    font-weight: 800;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: 0.3s;
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
 }
 
-.order-btn:hover {
-    transform: scale(1.05);
-    background: white;
+.card {
+  padding: 1rem;
+  border-radius: 15px;
+  background-color: #1a1a1aee;
+  text-align: center;
+  transition: 0.3s ease;
+  box-shadow: 0 0 10px #00000060;
+  border: 1px solid #ffffff22;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 0 25px #ffffff55;
+}
+
+.card img {
+  width: 65px;
+  height: 65px;
+  margin-bottom: 10px;
+}
+
+.card h3 {
+  color: #03b3ff;
+  font-size: 20px;
+  margin: 0.4rem 0;
+}
+
+.card p {
+  color: #ddd;
+  font-size: 14px;
+}
+
+
+/* ===========================
+   FOOTER
+=========================== */
+.footer {
+  background-color: #1a1919ff;
+  padding: 12px;
+  text-align: center;
+  margin-top: 40px;
+  border-top: 1px solid #cccccc33;
+}
+
+.footerText {
+  font-size: 12px;
+  opacity: 0.8;
 }

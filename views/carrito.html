@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saborytec | Carrito</title>
+    <link rel="stylesheet" href="../css/carrito.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="logo">SABORYTEC</div>
+        <nav class="nav-links">
+            <a href="inicio.html">INICIO</a>
+            <a href="explorar.html">EXPLORAR</a>
+            <a href="carrito.html" class="active">CARRITO</a>
+            <a href="#">PEDIDOS</a>
+        </nav>
+        <button class="cart-btn" onclick="cerrarSesion()"><i class="fas fa-sign-out-alt"></i> CERRAR SESIÓN</button>
+    </header>
+
+    <div class="bg-text">
+        <h1 class="bg-title">CARRITO</h1>
+    </div>
+
+    <main class="container">
+        <!-- Este contenedor es vital: aquí se renderizarán los carritos por tienda -->
+        <div id="carritos-container" class="carritos-grid">
+            <div class="loading">Cargando tus carritos...</div>
+        </div>
+
+        <!-- Plantilla para cuando no hay nada -->
+        <div id="carrito-vacio" class="empty-state" style="display: none;">
+            <i class="fas fa-shopping-basket"></i>
+            <p>Aún no tienes productos en tu carrito.</p>
+            <a href="explorar.html" class="btn-explorar">IR A EXPLORAR</a>
+        </div>
+    </main>
+
+    <!-- Cargamos los scripts -->
+    <script src="../js/navegacion/carrito.js"></script>
+</body>
+</html>

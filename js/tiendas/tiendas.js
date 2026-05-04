@@ -1,321 +1,209 @@
-// ============================================================
-// URL API
-// ============================================================
+/**
+ * Saborytec - Gestión de Perfil de Tienda
+ * Desarrollado por: FREDY & VICTOR
+ */
 
-const API_TIENDAS = "http://127.0.0.1:8000/api/tiendas";
+{
+    const API_TIENDAS_URL = "http://saborytecapi.test/api/tiendas"; 
+    let tiendaData = null; 
 
-let tiendaGlobal = null;
+    const getAuthHeaders = (isMultipart = false) => {
+        const headers = {
+            "Authorization": `Bearer ${localStorage.getItem("auth_token")}`, 
+            "Accept": "application/json"
+        };
+        if (!isMultipart) {
+            headers["Content-Type"] = "application/json";
+        }
+        return headers;
+    };
 
+    // ============================================================
+    // CARGA DE DATOS DESDE EL BACKEND
+    // ============================================================
 
-// ============================================================
-// OBTENER TIENDA
-// ============================================================
+    async function obtenerMiTienda() {
+        const contenedor = document.getElementById("contenido-dinamico");
+        
+        try {
+            const response = await fetch(API_TIENDAS_URL, {
+                method: "GET",
+                headers: getAuthHeaders()
+            });
 
-async function obtenerTienda(){
+            if (response.status === 401) {
+                window.location.href = "../login.html";
+                return;
+            }
 
-    const contenedor = document.getElementById('contenido-dinamico');
+            const respuesta = await response.json();
 
-    contenedor.innerHTML = `
-        <div class="empty-state">
-            <i class='bx bxs-store'></i>
-            <p>Cargando configuración de tienda...</p>
-        </div>
-    `;
+            if (respuesta.success && respuesta.data) {
+                tiendaData = respuesta.data;
+            } else {
+                tiendaData = {}; 
+            }
 
-    try{
+            renderFormularioTienda();
 
-        const response = await fetch(API_TIENDAS);
+        } catch (error) {
+            console.error("Error al cargar tienda:", error);
+            contenedor.innerHTML = `
+                <div class="empty-state">
+                    <i class='bx bx-error-circle'></i>
+                    <p>Error al conectar con el servidor de Saborytec.</p>
+                </div>`;
+        }
+    }
 
-        if(!response.ok){
-            throw new Error("No se pudo obtener la tienda");
+    // ============================================================
+    // RENDERIZADO DEL FORMULARIO
+    // ============================================================
+
+    function renderFormularioTienda() {
+        const t = tiendaData || {};
+        
+        const estaPendiente = t.aprobacion === 'pendiente';
+        const btnDisabled = estaPendiente ? 'disabled' : '';
+
+        const baseStorage = "http://saborytecapi.test/storage/";
+
+        const urlPortada = t.portada 
+            ? `${baseStorage}${t.portada}` 
+            : 'https://placehold.co/400x150?text=Sin+Portada';
+
+        const urlLogo = t.logo 
+            ? `${baseStorage}${t.logo}` 
+            : 'https://placehold.co/80x80?text=Logo';
+
+        let alertaEstado = '';
+        if (t.aprobacion === 'pendiente') {
+            alertaEstado = `<div class="alerta-warning">Tu tienda está en revisión por el administrador.</div>`;
+        } else if (t.aprobacion === 'rechazada') {
+            alertaEstado = `<div class="alerta-error">Tienda rechazada. Por favor, corrige los datos y reenvía.</div>`;
+        } else if (t.aprobacion === 'aprobada') {
+            alertaEstado = `<div class="alerta-success">Tu tienda está activa y visible.</div>`;
         }
 
-        const tiendas = await response.json();
+        document.getElementById("contenido-dinamico").innerHTML = `
+            ${alertaEstado}
+            <form id="formTienda" class="tienda-form" enctype="multipart/form-data">
+                
+                <div class="tienda-header">
+                    
+                    <div class="tienda-portada" id="previewPortada" style="background-image:url('${urlPortada}')">
+                        <input type="file" name="portada" id="inputPortada" class="tienda-file" accept="image/*">
+                        <span class="edit-hint"><i class='bx bx-camera'></i> Cambiar Portada</span>
+                    </div>
 
-        tiendaGlobal = tiendas[0];
+                    <div class="tienda-logo" id="previewLogo" style="background-image:url('${urlLogo}')">
+                        <input type="file" name="logo" id="inputLogo" class="tienda-file" accept="image/*">
+                        <span class="edit-hint"><i class='bx bx-image-add'></i></span>
+                    </div>
+                </div>
 
-        mostrarFormularioTienda(tiendaGlobal);
+                <div class="tienda-grid-2">
+                    <div class="tienda-campo">
+                        <label class="tienda-label">Nombre del Negocio</label>
+                        <input type="text" name="nombre" value="${t.nombre || ''}" required placeholder="Ej. Sabores de mi tierra">
+                    </div>
 
-    }catch(error){
+                    <div class="tienda-campo">
+                        <label class="tienda-label">Visibilidad</label>
+                        <select name="estado">
+                            <option value="activo" ${t.estado === 'activo' ? 'selected' : ''}>Abierto</option>
+                            <option value="inactivo" ${t.estado === 'inactivo' ? 'selected' : ''}>Cerrado</option>
+                        </select>
+                    </div>
+                </div>
 
-        console.error("Error:", error);
+                <div class="tienda-campo tienda-full">
+                    <label class="tienda-label">Descripción</label>
+                    <textarea class="tienda-textarea" name="descripcion" placeholder="Cuéntanos sobre tus productos...">${t.descripcion || ''}</textarea>
+                </div>
 
-        contenedor.innerHTML = `
-            <div class="empty-state">
-                <p>Error cargando tienda</p>
-            </div>
+                <h3 class="tienda-titulo-bloque">Redes Sociales</h3>
+                <div class="tienda-grid-2">
+                    <input type="text" name="facebook" placeholder="Facebook URL" value="${t.facebook || ''}">
+                    <input type="text" name="instagram" placeholder="Instagram Usuario" value="${t.instagram || ''}">
+                    <input type="text" name="whatsapp" placeholder="WhatsApp (10 dígitos)" value="${t.whatsapp || ''}">
+                    <input type="text" name="tiktok" placeholder="TikTok Usuario" value="${t.tiktok || ''}">
+                </div>
+
+                <h3 class="tienda-titulo-bloque">Información Bancaria</h3>
+                <div class="tienda-grid-3">
+                    <input type="text" name="banco" placeholder="Banco" value="${t.banco || ''}">
+                    <input type="text" name="clabe" placeholder="CLABE (18 dígitos)" value="${t.clabe || ''}" maxlength="18">
+                    <input type="text" name="titular_cuenta" placeholder="Nombre del titular" value="${t.titular_cuenta || ''}">
+                </div>
+                
+                <button type="submit" class="tienda-btn-guardar" id="btnGuardarTienda" ${btnDisabled}>
+                    ${estaPendiente ? 'Esperando Aprobación...' : (t.ID_tienda ? 'Actualizar Información' : 'Registrar Mi Tienda')}
+                </button>
+                
+            </form>
         `;
 
+        inicializarEventosForm();
     }
 
-}
-
-
-
-// ============================================================
-// MOSTRAR FORMULARIO
-// ============================================================
-
-function mostrarFormularioTienda(tienda){
-
-    const contenedor = document.getElementById('contenido-dinamico');
-
-    contenedor.innerHTML = `
-
-        <div class="modulo-header text-left fade-in-row">
-            <div>
-                <h2 class="modulo-titulo">Configuración de Mi Tienda</h2>
-                <p class="modulo-desc">
-                    Actualiza la identidad visual, redes y datos bancarios de tu local.
-                </p>
-            </div>
-        </div>
-
-        <form id="form-tienda" class="fade-in-row">
-
-            <div class="image-upload-section">
-
-                <div class="portada-preview"
-                id="portada-bg"
-                style="background-image:url('${tienda?.portada || "../img/default-portada.jpg"}')">
-
-                    <div class="upload-overlay">
-
-                        <i class='bx bx-camera'></i>
-
-                        <input type="file"
-                        id="input-portada"
-                        accept="image/*"
-                        onchange="previewImage(event,'portada-bg')">
-
-                    </div>
-
-                    <div class="logo-preview-wrapper">
-
-                        <div class="logo-preview"
-                        id="logo-img"
-                        style="background-image:url('${tienda?.logo || "../img/default-logo.png"}')">
-
-                            <i class='bx bx-plus' id="plus-icon"></i>
-
-                            <input type="file"
-                            id="input-logo"
-                            accept="image/*"
-                            onchange="previewImage(event,'logo-img')">
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-
-            <div class="form-grid-2">
-
-                <div class="input-group">
-
-                    <label>NOMBRE DE LA TIENDA</label>
-
-                    <input type="text"
-                    id="nombre"
-                    value="${tienda?.nombre || ""}"
-                    placeholder="Nombre comercial">
-
-                </div>
-
-                <div class="input-group">
-
-                    <label>ESTADO DE VISIBILIDAD</label>
-
-                    <select id="visible">
-
-                        <option value="1" ${tienda?.visible == 1 ? "selected":""}>
-                        Activo
-                        </option>
-
-                        <option value="0" ${tienda?.visible == 0 ? "selected":""}>
-                        Inactivo
-                        </option>
-
-                    </select>
-
-                </div>
-
-            </div>
-
-
-
-            <div class="input-group">
-
-                <label>DESCRIPCIÓN BREVE</label>
-
-                <textarea id="descripcion" rows="2"
-                placeholder="Describe tu especialidad...">${tienda?.descripcion || ""}</textarea>
-
-            </div>
-
-
-
-            <h3 class="form-subtitulo">Redes Sociales y Contacto</h3>
-
-            <div class="form-grid-2">
-
-                <div class="input-social facebook">
-                    <i class='bx bxl-facebook-circle'></i>
-                    <input id="facebook" type="text"
-                    value="${tienda?.facebook || ""}"
-                    placeholder="Facebook">
-                </div>
-
-                <div class="input-social instagram">
-                    <i class='bx bxl-instagram'></i>
-                    <input id="instagram" type="text"
-                    value="${tienda?.instagram || ""}"
-                    placeholder="Instagram">
-                </div>
-
-                <div class="input-social whatsapp">
-                    <i class='bx bxl-whatsapp'></i>
-                    <input id="whatsapp" type="text"
-                    value="${tienda?.whatsapp || ""}"
-                    placeholder="WhatsApp">
-                </div>
-
-                <div class="input-social tiktok">
-                    <i class='bx bxl-tiktok'></i>
-                    <input id="tiktok" type="text"
-                    value="${tienda?.tiktok || ""}"
-                    placeholder="TikTok">
-                </div>
-
-            </div>
-
-
-
-            <h3 class="form-subtitulo">Información de Pago</h3>
-
-            <div class="form-grid-3">
-
-                <div class="input-group">
-                    <label>BANCO</label>
-                    <input id="banco" type="text"
-                    value="${tienda?.banco || ""}"
-                    placeholder="Ej. BBVA">
-                </div>
-
-                <div class="input-group">
-                    <label>CLABE (18 DÍGITOS)</label>
-                    <input id="clabe" type="text"
-                    maxlength="18"
-                    value="${tienda?.clabe || ""}">
-                </div>
-
-                <div class="input-group">
-                    <label>TITULAR</label>
-                    <input id="titular" type="text"
-                    value="${tienda?.titular_cuenta || ""}">
-                </div>
-
-            </div>
-
-
-
-            <div class="form-actions-container">
-
-                <button type="button"
-                class="btn-action-tienda btn-save-tienda"
-                onclick="guardarCambiosTienda()">
-
-                    <i class='bx bx-save'></i> Guardar
-
-                </button>
-
-            </div>
-
-        </form>
-    `;
-}
-
-
-
-// ============================================================
-// GUARDAR CAMBIOS
-// ============================================================
-
-async function guardarCambiosTienda(){
-
-    const id = tiendaGlobal.ID_tienda;
-
-    const datos = {
-
-        nombre: document.getElementById("nombre").value,
-        descripcion: document.getElementById("descripcion").value,
-        visible: document.getElementById("visible").value,
-
-        facebook: document.getElementById("facebook").value,
-        instagram: document.getElementById("instagram").value,
-        whatsapp: document.getElementById("whatsapp").value,
-        tiktok: document.getElementById("tiktok").value,
-
-        banco: document.getElementById("banco").value,
-        clabe: document.getElementById("clabe").value,
-        titular: document.getElementById("titular_cuenta").value
-
-    };
-
-    try{
-
-        const response = await fetch(`${API_TIENDAS}/${id}`,{
-
-            method:"PUT",
-
-            headers:{
-                "Content-Type":"application/json"
-            },
-
-            body: JSON.stringify(datos)
-
+    // ============================================================
+    // EVENTOS Y ENVÍO
+    // ============================================================
+
+    function inicializarEventosForm() {
+        const form = document.getElementById("formTienda");
+        if (!form) return;
+
+        const setupPreview = (inputId, previewId) => {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+            if (input && preview) {
+                input.addEventListener("change", function() {
+                    const file = this.files[0];
+                    if (file) {
+                        preview.style.backgroundImage = `url('${URL.createObjectURL(file)}')`;
+                    }
+                });
+            }
+        };
+
+        setupPreview("inputLogo", "previewLogo");
+        setupPreview("inputPortada", "previewPortada");
+
+        form.addEventListener("submit", async function(e) {
+            e.preventDefault();
+
+            const btn = document.getElementById("btnGuardarTienda");
+            btn.innerText = "Procesando...";
+            btn.disabled = true;
+
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch(API_TIENDAS_URL, {
+                    method: "POST",
+                    headers: getAuthHeaders(true),
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || "Error al guardar la tienda");
+                }
+
+                alert("Información guardada. Entrará en revisión por el administrador.");
+                obtenerMiTienda();
+
+            } catch (error) {
+                alert("Atención: " + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Actualizar Información";
+            }
         });
-
-        if(!response.ok){
-            throw new Error("Error actualizando tienda");
-        }
-
-        alert("Tienda actualizada correctamente");
-
-    }catch(error){
-
-        console.error("Error:", error);
-
     }
 
-}
-
-
-
-// ============================================================
-// PREVIEW IMAGEN
-// ============================================================
-
-function previewImage(event, elementId){
-
-    const reader = new FileReader();
-
-    reader.onload = function(){
-
-        const output = document.getElementById(elementId);
-
-        output.style.backgroundImage = `url('${reader.result}')`;
-
-        if(elementId === 'logo-img'){
-            document.getElementById('plus-icon').style.display = 'none';
-        }
-
-    };
-
-    reader.readAsDataURL(event.target.files[0]);
-
+    window.obtenerMiTienda = obtenerMiTienda;
 }
