@@ -19,7 +19,7 @@
             <a href="inicio.html" class="active">INICIO</a>
             <a href="explorar.html">EXPLORAR</a>
             <a href="carrito.html">CARRITO</a>
-            <a href="#">PEDIDOS</a>
+            <a href="MisPedidos.html">PEDIDOS</a>
         </nav>
         <button class="cart-btn"><i class="fas fa-user"></i> CERRAR SESIÓN</button>
     </header>
@@ -70,6 +70,26 @@
                                 <!-- Se llena vía API -->
                             </div>
                             <input type="hidden" id="hiddenTienda" name="tienda">
+                        </div>
+
+                        <!-- NUEVO: Selector de Disponibilidad -->
+                        <div class="st-custom-select" id="selectDisponible">
+                            <div class="st-select-trigger">
+                                <span id="textDisponible">Disponibilidad</span>
+                                <div class="arrow"></div>
+                            </div>
+                            <div class="st-custom-options" id="optionsDisponible">
+                                <div class="st-option" data-value="">Cualquiera</div>
+                                <div class="st-option" data-value="1">Disponible</div>
+                                <div class="st-option" data-value="0">Agotado</div>
+                            </div>
+                            <input type="hidden" id="hiddenDisponible" name="disponible">
+                        </div>
+
+                        <!-- NUEVO: Input de Precio Máximo -->
+                        <div class="st-price-filter">
+                            <input type="number" id="inputPrecioMax" class="st-search-input" 
+                                   placeholder="Precio Máx $" style="width: 120px; height: 45px; font-size: 0.9rem;">
                         </div>
 
                         <button type="button" id="btnReset" class="st-btn-reset" style="display:none;">Limpiar</button>

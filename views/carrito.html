@@ -8,8 +8,6 @@
     <link rel="stylesheet" href="../css/carrito.css">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
@@ -19,7 +17,7 @@
             <a href="inicio.html">INICIO</a>
             <a href="explorar.html">EXPLORAR</a>
             <a href="carrito.html" class="active">CARRITO</a>
-            <a href="#">PEDIDOS</a>
+            <a href="MisPedidos.html">PEDIDOS</a>
         </nav>
         <button class="cart-btn" onclick="cerrarSesion()"><i class="fas fa-sign-out-alt"></i> CERRAR SESIÓN</button>
     </header>
@@ -29,12 +27,10 @@
     </div>
 
     <main class="container">
-        <!-- Este contenedor es vital: aquí se renderizarán los carritos por tienda -->
         <div id="carritos-container" class="carritos-grid">
             <div class="loading">Cargando tus carritos...</div>
         </div>
 
-        <!-- Plantilla para cuando no hay nada -->
         <div id="carrito-vacio" class="empty-state" style="display: none;">
             <i class="fas fa-shopping-basket"></i>
             <p>Aún no tienes productos en tu carrito.</p>
@@ -42,7 +38,44 @@
         </div>
     </main>
 
-    <!-- Cargamos los scripts -->
+    <div id="modal-pago" class="modal-overlay">
+        <div class="modal-content animate-slide-up">
+            <button class="close-modal" onclick="cerrarModal()" style="position: absolute; right: 20px; top: 15px; background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            
+            <h2 style="font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 1px;">FINALIZAR PEDIDO</h2>
+            <p style="color: #888; margin-bottom: 25px; font-size: 0.9rem;">Selecciona tu método de pago para continuar</p>
+
+            <div class="metodos-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                <label class="metodo-option" style="cursor: pointer;">
+                    <input type="radio" name="metodo" value="efectivo" checked onclick="toggleMetodoPago('efectivo')" style="display: none;">
+                    <div class="metodo-box" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; border: 2px solid transparent; transition: 0.3s; text-align: center;">
+                        <i class="fas fa-money-bill-wave" style="display: block; margin-bottom: 10px; font-size: 1.2rem;"></i>
+                        <span>Efectivo</span>
+                    </div>
+                </label>
+                
+                <label class="metodo-option" style="cursor: pointer;">
+                    <input type="radio" name="metodo" value="transferencia" onclick="toggleMetodoPago('transferencia')" style="display: none;">
+                    <div class="metodo-box" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; border: 2px solid transparent; transition: 0.3s; text-align: center;">
+                        <i class="fas fa-university" style="display: block; margin-bottom: 10px; font-size: 1.2rem;"></i>
+                        <span>Transferencia</span>
+                    </div>
+                </label>
+            </div>
+
+            <div id="info-bancaria" style="display: none; background: rgba(55, 96, 114, 0.1); border: 1px solid rgba(55, 96, 114, 0.3); padding: 15px; border-radius: 12px; text-align: left; margin-bottom: 20px; font-size: 0.85rem; line-height: 1.6;">
+                <p style="margin: 0;"><strong>Banco:</strong> BBVA</p>
+                <p style="margin: 0;"><strong>Titular:</strong> Cafetería ITSSMT</p>
+                <p style="margin: 0;"><strong>CLABE:</strong> 0123 4567 8901 2345 67</p>
+                <p style="margin-top: 5px; color: #376072; font-size: 0.75rem;">* Deberás subir tu comprobante en la siguiente pantalla.</p>
+            </div>
+
+            <button class="btn-finalizar" onclick="finalizarPedido()" style="width: 100%; background: #376072; color: white; border: none; padding: 16px; border-radius: 14px; font-weight: 800; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;">
+                Confirmar y Ver Pedido
+            </button>
+        </div>
+    </div>
+
     <script src="../js/navegacion/carrito.js"></script>
 </body>
 </html>

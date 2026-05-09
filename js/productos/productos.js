@@ -141,7 +141,13 @@
         tbody.innerHTML = data.length ? data.map(p => {
             const estadoReal = (p.estado || 'Pendiente');
             const esAprobado = estadoReal.toLowerCase() === 'aprobado';
-            const urlImg = p.imagen ? `${STORAGE_URL}${p.imagen}` : 'https://placehold.co/45x45?text=Sin+Foto';
+            const urlImg = (() => {
+                if (!p.imagen) return 'https://placehold.co/45x45?text=Sin+Foto';
+
+                if (p.imagen.startsWith('http')) return p.imagen;
+
+                return `${STORAGE_URL}${p.imagen.replace(/^\/+/, '')}`;
+            })();
             
             return `
                 <tr>

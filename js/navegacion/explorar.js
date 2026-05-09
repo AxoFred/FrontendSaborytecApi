@@ -17,15 +17,25 @@ document.addEventListener("DOMContentLoaded", () => {
     cargarFiltros();
     cargarProductos();
 
-    // 3. Listener para Búsqueda en Tiempo Real
+    // 3. Listener para Búsqueda en Tiempo Real (Nombre/Marca)
     const inputBuscar = document.getElementById('inputBuscar');
     if (inputBuscar) {
         inputBuscar.addEventListener('input', () => {
             clearTimeout(timeoutBusqueda);
-            // Espera 350ms después de que el usuario deja de escribir para realizar la petición
             timeoutBusqueda = setTimeout(() => {
                 cargarProductos();
             }, 350);
+        });
+    }
+
+    // --- AGREGADO: Listener para Precio Máximo ---
+    const inputPrecioMax = document.getElementById('inputPrecioMax');
+    if (inputPrecioMax) {
+        inputPrecioMax.addEventListener('input', () => {
+            clearTimeout(timeoutBusqueda);
+            timeoutBusqueda = setTimeout(() => {
+                cargarProductos();
+            }, 500);
         });
     }
 
@@ -114,10 +124,15 @@ async function cargarProductos() {
     const buscar = document.getElementById('inputBuscar').value;
     const categoria = document.getElementById('hiddenCategoria').value;
     const tienda = document.getElementById('hiddenTienda').value;
+    
+    // --- AGREGADO: Captura de nuevos filtros ---
+    const precioMax = document.getElementById('inputPrecioMax')?.value;
+    const disponible = document.getElementById('hiddenDisponible')?.value;
 
     const btnReset = document.getElementById('btnReset');
     if (btnReset) {
-        btnReset.style.display = (buscar || categoria || tienda) ? 'inline-block' : 'none';
+        // Actualizado para mostrar el botón si cualquiera de los 5 filtros tiene valor
+        btnReset.style.display = (buscar || categoria || tienda || precioMax || disponible) ? 'inline-block' : 'none';
     }
 
     try {
@@ -125,6 +140,10 @@ async function cargarProductos() {
         if (buscar) params.append('buscar', buscar);
         if (categoria) params.append('categoria', categoria);
         if (tienda) params.append('tienda', tienda);
+        
+        // --- AGREGADO: Parámetros a la URL ---
+        if (precioMax) params.append('precio_max', precioMax);
+        if (disponible) params.append('disponible', disponible);
 
         const response = await fetch(`${API_URL}/explorar?${params.toString()}`, {
             headers: obtenerHeaders()
@@ -177,23 +196,17 @@ function renderizarProductos(productos, grid) {
 
 // --- ACCIONES DEL CARRITO ---
 
-/**
- * Envía el producto a la base de datos para guardarlo en el carrito.
- * La lógica del controlador se encarga de separarlo por tienda.
- */
 async function agregarAlCarrito(idProducto) {
     try {
-        // 1. Enviamos la petición a la ruta que creamos en api.php
         const response = await fetch(`${API_URL}/carrito/agregar`, {
             method: 'POST',
-            headers: obtenerHeaders(), // Incluye el Token y Content-Type
+            headers: obtenerHeaders(),
             body: JSON.stringify({
                 ID_producto: idProducto,
-                cantidad: 1 // Por ahora agregamos de 1 en 1
+                cantidad: 1
             })
         });
 
-        // 2. Si el token expiró o no es válido
         if (response.status === 401) {
             manejarSesionExpirada();
             return;
@@ -202,7 +215,6 @@ async function agregarAlCarrito(idProducto) {
         const data = await response.json();
 
         if (response.ok) {
-            // 3. Feedback visual (Notificación minimalista)
             mostrarNotificacion(data.message || "¡Producto agregado!", "success");
         } else {
             mostrarNotificacion(data.message || "Error al agregar", "error");
@@ -214,13 +226,8 @@ async function agregarAlCarrito(idProducto) {
     }
 }
 
-/**
- * Función auxiliar para mostrar notificaciones estilo iPhone
- */
 function mostrarNotificacion(mensaje, tipo) {
     const notification = document.createElement('div');
-    
-    // Estilo según el tipo (éxito o error)
     const colorFondo = tipo === 'success' ? '#28a745' : '#dc3545';
     
     notification.style = `
@@ -240,7 +247,6 @@ function mostrarNotificacion(mensaje, tipo) {
     notification.innerHTML = mensaje;
     document.body.appendChild(notification);
     
-    // Se elimina sola después de 2.5 segundos
     setTimeout(() => {
         notification.style.opacity = '0';
         notification.style.transition = 'opacity 0.5s ease';
@@ -287,6 +293,14 @@ function limpiarFiltros() {
     document.getElementById('inputBuscar').value = '';
     document.getElementById('hiddenCategoria').value = '';
     document.getElementById('hiddenTienda').value = '';
+    
+    // --- AGREGADO: Reset de nuevos filtros ---
+    if(document.getElementById('inputPrecioMax')) document.getElementById('inputPrecioMax').value = '';
+    if(document.getElementById('hiddenDisponible')) {
+        document.getElementById('hiddenDisponible').value = '';
+        document.getElementById('textDisponible').innerText = 'Disponibilidad';
+    }
+
     document.getElementById('textCategoria').innerText = 'Categorías';
     document.getElementById('textTienda').innerText = 'Tiendas';
     cargarProductos();

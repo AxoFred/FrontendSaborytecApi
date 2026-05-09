@@ -338,3 +338,162 @@ body {
         width: 100%;
     }
 }
+
+.btn-confirmar-pedido:hover {
+    background: var(--primary-light) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.btn-confirmar-pedido:active {
+    transform: scale(0.98);
+}
+
+.metodo-option input:checked + .metodo-box {
+    border-color: #376072;
+    background: rgba(55, 96, 114, 0.2) !important;
+}
+/* =============================================
+   ESTILOS DEL MODAL DE PAGO (PREMIUM)
+   ============================================= */
+
+/* Fondo oscuro con desenfoque */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85); /* Fondo muy oscuro */
+    backdrop-filter: blur(10px);    /* Efecto de desenfoque */
+    display: none;                  /* Oculto por defecto */
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 20px;
+}
+
+/* Clase que activa el JS */
+.modal-overlay.active {
+    display: flex;
+}
+
+/* Caja del Modal */
+.modal-content {
+    background: #111; /* Negro mate */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 40px 30px;
+    border-radius: 28px;
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+    text-align: center;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* Animación de entrada */
+.animate-slide-up {
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Opciones de Método de Pago */
+.metodos-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin: 25px 0;
+}
+
+.metodo-option {
+    cursor: pointer;
+}
+
+.metodo-option input {
+    display: none; /* Escondemos el radio button feo */
+}
+
+.metodo-box {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 20px;
+    border-radius: 18px;
+    border: 2px solid transparent;
+    color: #888;
+    transition: all 0.3s ease;
+}
+
+.metodo-box i {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* Estilo cuando está seleccionado */
+.metodo-option input:checked + .metodo-box {
+    background: rgba(55, 96, 114, 0.15);
+    border-color: #376072;
+    color: #fff;
+    transform: scale(1.02);
+}
+
+/* Bloque de Información Bancaria */
+#info-bancaria {
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 4px solid #376072;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: left;
+    margin-bottom: 25px;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Botón Finalizar */
+.btn-finalizar {
+    width: 100%;
+    background: #376072;
+    color: white;
+    border: none;
+    padding: 18px;
+    border-radius: 16px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-finalizar:hover {
+    background: #4a7d94;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(55, 96, 114, 0.3);
+}
+
+.btn-finalizar:disabled {
+    background: #2c3e50;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Botón cerrar (X) */
+.close-modal {
+    transition: transform 0.2s ease;
+}
+
+.close-modal:hover {
+    transform: rotate(90deg);
+    color: #ff4d4d !important;
+}

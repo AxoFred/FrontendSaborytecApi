@@ -66,6 +66,23 @@ async function mostrarSeccion(seccion) {
             contenedor.innerHTML = `<p style="color:red;">Error: Módulo de productos no cargado.</p>`;
         }
     }
+    // --- NUEVA SECCIÓN DE REPORTES ---
+    else if (seccion === "reportes") {
+        if (typeof obtenerReportesAdmin === "function") {
+            obtenerReportesAdmin();
+        } else {
+            contenedor.innerHTML = `<p style="color:red;">Error: Módulo de reportes administrativos no cargado.</p>`;
+        }
+    }
+    // Manejo de secciones no definidas
+    else {
+        contenedor.innerHTML = `
+            <div style="text-align: center; padding: 50px; color: #86868b;">
+                <i class='bx bx-info-circle' style="font-size: 3rem;"></i>
+                <p>La sección <strong>${seccion}</strong> aún está en desarrollo.</p>
+            </div>`;
+    }
+    
 }
 
 window.mostrarSeccion = mostrarSeccion;
