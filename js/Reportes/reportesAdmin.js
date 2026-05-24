@@ -131,33 +131,38 @@
         });
     }
 
-    window.exportarPDFAdmin = function() {
-        if (!datosAdminGlobal) return;
+ window.exportarPDFAdmin = function() {
+        if (!datosAdminGlobal) {
+            alert("Los datos aún no se han cargado, por favor espera.");
+            return;
+        }
+
         const data = datosAdminGlobal;
         const tempDiv = document.createElement('div');
         tempDiv.style.padding = "40px";
+        tempDiv.style.fontFamily = "sans-serif";
         
-        // Estilo del reporte para el PDF
+        // Estructura limpia para el PDF
         tempDiv.innerHTML = `
             <div style="border-bottom: 3px solid #007aff; padding-bottom: 20px; margin-bottom: 30px;">
                 <h1 style="margin: 0; color: #1d1d1f;">SABORYTEC <span style="font-weight: 300;">ITSSMT</span></h1>
                 <p style="color: #86868b;">Reporte Administrativo - ${new Date().toLocaleDateString()}</p>
             </div>
             <div style="margin-bottom: 30px;">
-                <h3>Resumen General</h3>
-                <p><strong>Ingresos Consolidados:</strong> $${parseFloat(data.ingresos_totales).toLocaleString()} MXN</p>
+                <h3 style="color: #007aff;">Resumen General</h3>
+                <p><strong>Ingresos Consolidados:</strong> $${parseFloat(data.ingresos_totales).toLocaleString('es-MX', {minimumFractionDigits: 2})}</p>
                 <p><strong>Total de Vendedores:</strong> ${data.total_vendedores}</p>
                 <p><strong>Productos en Sistema:</strong> ${data.total_productos}</p>
             </div>
             <table style="width: 100%; border-collapse: collapse;">
                 <tr style="background: #1d1d1f; color: white;">
-                    <th style="padding: 10px; text-align: left;">Vendedor</th>
-                    <th style="padding: 10px; text-align: right;">Total Ventas</th>
+                    <th style="padding: 12px; text-align: left;">Vendedor</th>
+                    <th style="padding: 12px; text-align: right;">Total Ventas</th>
                 </tr>
                 ${data.comparativa_vendedores.map(v => `
                     <tr style="border-bottom: 1px solid #eee;">
-                        <td style="padding: 10px;">${v.nombre_vendedor}</td>
-                        <td style="padding: 10px; text-align: right;">$${parseFloat(v.total_ventas).toLocaleString()}</td>
+                        <td style="padding: 12px;">${v.nombre_vendedor}</td>
+                        <td style="padding: 12px; text-align: right;">$${parseFloat(v.total_ventas).toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
                     </tr>
                 `).join('')}
             </table>
@@ -166,13 +171,17 @@
             </div>
         `;
 
-        const opt = {
-            margin: 10,
-            filename: `Saborytec_Reporte_Admin.pdf`,
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
+        // Aplicamos un pequeño delay para asegurar que el motor de renderizado tome el div creado
+        setTimeout(() => {
+            const opt = {
+                margin: 10,
+                filename: 'Saborytec_Reporte_Admin.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
 
-        html2pdf().set(opt).from(tempDiv).save();
+            html2pdf().set(opt).from(tempDiv).save();
+        }, 300);
     };
 })();

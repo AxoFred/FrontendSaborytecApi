@@ -30,6 +30,9 @@
                 return;
             }
 
+            // Guardamos la respuesta para el PDF
+            window.datosReporte = response;
+
             renderizarInterfazReportes(contenedor, response);
             
             // Inicializar Chart.js si hay datos en la semana
@@ -44,12 +47,10 @@
     };
 
     function renderizarInterfazReportes(contenedor, data) {
-        // Validación y conversión de datos del resumen
         const ingresos = data.resumen && data.resumen.ingresos_hoy ? parseFloat(data.resumen.ingresos_hoy) : 0;
         const pedidos = data.resumen && data.resumen.pedidos_hoy ? parseInt(data.resumen.pedidos_hoy) : 0;
         const top_productos = data.top_productos || [];
 
-        // Formateador de moneda para México ($0.00)
         const formatoMoneda = new Intl.NumberFormat('es-MX', {
             style: 'currency',
             currency: 'MXN',
@@ -57,13 +58,17 @@
 
         contenedor.innerHTML = `
             <div class="reportes-container fade-in">
-                <div class="header-seccion">
-                    <h2><i class='bx bx-bar-chart-alt-2'></i> Rendimiento de Hoy</h2>
-                    <p>Visualiza el flujo de ventas y productos estrella.</p>
+                <div class="header-seccion" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h2><i class='bx bx-bar-chart-alt-2'></i> Rendimiento de Hoy</h2>
+                        <p>Visualiza el flujo de ventas y productos estrella.</p>
+                    </div>
+                    <button onclick="window.generarReportePDF()" style="background: #007aff; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                        <i class='bx bxs-file-pdf'></i> Exportar PDF
+                    </button>
                 </div>
 
                 <div class="stats-grid">
-                    <!-- Tarjeta de Ingresos -->
                     <div class="stat-card premium-shadow">
                         <div class="stat-icon" style="background: rgba(40, 167, 69, 0.1); color: #28a745;">
                             <i class='bx bx-dollar-circle'></i>
@@ -73,8 +78,6 @@
                             <h3 class="stat-value">${formatoMoneda.format(ingresos)}</h3>
                         </div>
                     </div>
-
-                    <!-- Tarjeta de Pedidos -->
                     <div class="stat-card premium-shadow">
                         <div class="stat-icon" style="background: rgba(0, 122, 255, 0.1); color: #007aff;">
                             <i class='bx bx-shopping-bag'></i>
@@ -87,7 +90,6 @@
                 </div>
 
                 <div class="reportes-detalles">
-                    <!-- Gráfica Semanal -->
                     <div class="reporte-box premium-shadow">
                         <div class="box-header">
                             <h3><i class='bx bx-trending-up'></i> Histórico 7 Días</h3>
@@ -96,8 +98,6 @@
                             <canvas id="graficaVentasSemanal"></canvas>
                         </div>
                     </div>
-
-                    <!-- Ranking de Productos -->
                     <div class="reporte-box premium-shadow">
                         <div class="box-header">
                             <h3><i class='bx bx-medal'></i> Más Vendidos</h3>
@@ -117,61 +117,85 @@
                 </div>
             </div>
         `;
-
-        
     }
 
-    function inicializarGraficaVentas(datosSemana) {
-    const canvas = document.getElementById('graficaVentasSemanal');
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    
-    // Mapeo de datos: Fecha (Eje X) y Monto (Eje Y)
-    const labels = datosSemana.map(d => {
-        // Forzamos la interpretación de la fecha local para evitar desfases
-        const [anio, mes, dia] = d.fecha.split('-');
-        const fechaObj = new Date(anio, mes - 1, dia); 
-        return fechaObj.toLocaleDateString('es-MX', { weekday: 'short', day: 'numeric' });
-    });
-    
-    const valores = datosSemana.map(d => parseFloat(d.total));
-
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Ventas Diarias',
-                data: valores,
-                borderColor: '#007aff', // Azul Apple/Premium
-                backgroundColor: 'rgba(0, 122, 255, 0.1)',
-                borderWidth: 3,
-                tension: 0.4, // Curva suave
-                fill: true,
-                pointRadius: 5,
-                pointBackgroundColor: '#007aff',
-                pointBorderColor: '#ffffff',
-                pointBorderWidth: 2
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false } // Ocultamos leyenda para diseño limpio
-            },
-            scales: {
-                y: { 
-                    beginAtZero: true,
-                    grid: { color: '#f0f0f2' },
-                    ticks: { 
-                        callback: value => '$' + value // Formato moneda en eje Y
-                    }
-                },
-                x: { grid: { display: false } }
-            }
+    window.generarReportePDF = function() {
+        const data = window.datosReporte;
+        
+        // Validación de seguridad para evitar errores si no hay datos cargados
+        if (!data) {
+            alert("No hay datos disponibles para exportar. Por favor, espera a que carguen.");
+            return;
         }
-    });
-}
+
+        // Definimos el contenido HTML
+        const contenidoHTML = `
+            <div style="padding: 40px; font-family: sans-serif;">
+                <h1 style="color: #007aff;">Reporte Saborytec</h1>
+                <p>Fecha: ${new Date().toLocaleDateString()}</p>
+                <h3>Resumen de hoy</h3>
+                <p>Ingresos: $${parseFloat(data.resumen.ingresos_hoy).toFixed(2)}</p>
+                <p>Pedidos: ${data.resumen.pedidos_hoy}</p>
+                <h3>Top Productos</h3>
+                <table style="width:100%; border-collapse: collapse;">
+                    <thead><tr style="background:#eee;"><th style="padding:10px; text-align:left;">Producto</th><th style="padding:10px; text-align:left;">Ventas</th></tr></thead>
+                    <tbody>${data.top_productos.map(p => `<tr><td style="padding:10px; border-bottom:1px solid #ccc;">${p.nombre_producto}</td><td style="padding:10px; border-bottom:1px solid #ccc;">${p.total_vendido}</td></tr>`).join('')}</tbody>
+                </table>
+            </div>
+        `;
+
+        // Aplicamos el timer para asegurar la estabilidad del renderizado
+        setTimeout(() => {
+            html2pdf()
+                .from(contenidoHTML)
+                .set({
+                    margin: 0.5,
+                    filename: 'Reporte_Saborytec.pdf',
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                })
+                .save();
+        }, 500); // 500ms de espera es suficiente para que el navegador procese el bloque HTML
+    };
+
+    function inicializarGraficaVentas(datosSemana) {
+        const canvas = document.getElementById('graficaVentasSemanal');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const labels = datosSemana.map(d => {
+            const [anio, mes, dia] = d.fecha.split('-');
+            const fechaObj = new Date(anio, mes - 1, dia); 
+            return fechaObj.toLocaleDateString('es-MX', { weekday: 'short', day: 'numeric' });
+        });
+        const valores = datosSemana.map(d => parseFloat(d.total));
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Ventas Diarias',
+                    data: valores,
+                    borderColor: '#007aff',
+                    backgroundColor: 'rgba(0, 122, 255, 0.1)',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#007aff',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#f0f0f2' }, ticks: { callback: value => '$' + value } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    }
 })();

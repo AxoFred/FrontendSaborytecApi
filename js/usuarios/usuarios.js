@@ -5,6 +5,7 @@
 
 // Usamos un bloque para encapsular el alcance y evitar errores de "Identifier already declared"
 {
+    //const API_URL_USERS = "https://saborytecapi-production.up.railway.app/api/usuarios";
     const API_URL_USERS = "http://saborytecapi.test/api/usuarios";
     
     // Solo declaramos la función de headers si no existe en el scope global

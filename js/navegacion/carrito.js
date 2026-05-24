@@ -4,12 +4,17 @@
  */
 
 // 1. CONFIGURACIÓN GLOBAL
+//const API_URL = "https://saborytecapi-production.up.railway.app/api/cliente";
+//const BACKEND_URL = "https://saborytecapi-production.up.railway.app";
+
 const API_URL = "http://saborytecapi.test/api/cliente";
 const BACKEND_URL = "http://saborytecapi.test";
+
 const RUTA_DEFAULT = "../assets/imagenes/carrito.png";
 
 let esPrimeraCarga = true;
 let tiendaSeleccionadaId = null; // <-- Agregado para el flujo de pago
+let datosCarritoGlobal = []; // <-- Variable para guardar los datos y extraer info bancaria
 
 // 2. INICIALIZACIÓN
 document.addEventListener('DOMContentLoaded', () => {
@@ -32,6 +37,7 @@ async function inicializarCarrito() {
         }
 
         const data = await response.json();
+        datosCarritoGlobal = data; // <-- Guardamos la data aquí sin modificar el flujo
 
         if (!Array.isArray(data) || data.length === 0) {
             if (container) container.style.display = 'none';
@@ -263,8 +269,16 @@ function manejarSesionExpirada() {
 function procederPago(idTienda) {
     tiendaSeleccionadaId = idTienda;
     localStorage.setItem('tienda_a_pagar', idTienda);
+
+    // --- LÓGICA DE DATOS BANCARIOS DINÁMICOS ---
+    const infoTienda = datosCarritoGlobal.find(item => item.ID_tienda == idTienda);
+    if (infoTienda) {
+        document.getElementById('txt-banco').innerText = infoTienda.banco || "No disponible";
+        document.getElementById('txt-titular').innerText = infoTienda.titular_cuenta || "No disponible";
+        document.getElementById('txt-clabe').innerText = infoTienda.clabe || "No disponible";
+    }
+    // ------------------------------------------
     
-    // Mostramos el modal de pago que pondrás en tu HTML
     const modal = document.getElementById('modal-pago');
     if(modal) modal.classList.add('active');
 }
@@ -303,7 +317,6 @@ async function finalizarPedido() {
         });
 
         if (response.ok) {
-            // Limpiamos y vamos a la lista de pedidos
             window.location.href = 'MisPedidos.html';
         } else {
             const errorData = await response.json();

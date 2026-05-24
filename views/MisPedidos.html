@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +8,10 @@
     <link rel="stylesheet" href="../css/MisPedidos.css">
     <!-- Iconos y Fuentes -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;800&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
 
     <header class="navbar">
@@ -38,41 +41,77 @@
                 <p>Buscando tus órdenes...</p>
             </div>
         </main>
-<!-- MODAL DEL CHAT (DENTRO DE LA SHELL PARA EFECTO MÓVIL) -->
-<div id="modal-chat" class="modal-chat-overlay" style="display: none;">
-    <div class="modal-chat-content">
-        <div class="modal-chat-header">
-            <div class="tienda-info">
-                <span id="chat-tienda-nombre">Cargando...</span>
-                <!-- CAMBIO AQUÍ: ID agregado para mostrar la orden -->
-                <small id="chat-orden-id">Orden #---</small>
+        <!-- MODAL DEL CHAT (DENTRO DE LA SHELL PARA EFECTO MÓVIL) -->
+        <div id="modal-chat" class="modal-chat-overlay" style="display: none;">
+            <div class="modal-chat-content">
+                <div class="modal-chat-header">
+                    <div class="tienda-info">
+                        <span id="chat-tienda-nombre">Cargando...</span>
+                        <!-- CAMBIO AQUÍ: ID agregado para mostrar la orden -->
+                        <small id="chat-orden-id">Orden #---</small>
+                    </div>
+                    <button class="close-modal" onclick="cerrarChatModal()">&times;</button>
+                </div>
+
+                <div id="chat-box" class="chat-box">
+                    <!-- Mensajes dinámicos -->
+                </div>
+
+                <div id="image-preview-container" class="preview-container" style="display:none;">
+                    <img id="image-preview" src="">
+                    <button class="btn-remove-img" onclick="cancelarSubida()"><i class="fas fa-times"></i></button>
+                </div>
+
+                <div class="chat-input-wrapper" id="input-wrapper-cliente">
+                    <label for="input-comprobante" class="attach-btn">
+                        <i class="fas fa-image"></i>
+                        <input type="file" id="input-comprobante" hidden accept="image/*"
+                            onchange="previewImage(event)">
+                    </label>
+                    <input type="text" id="mensaje-texto" placeholder="Escribe un mensaje..."
+                        onkeyup="if(event.key==='Enter') enviarMensaje()">
+                    <button class="send-btn" onclick="enviarMensaje()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
             </div>
-            <button class="close-modal" onclick="cerrarChatModal()">&times;</button>
-        </div>
-        
-        <div id="chat-box" class="chat-box">
-            <!-- Mensajes dinámicos -->
-        </div>
-
-        <div id="image-preview-container" class="preview-container" style="display:none;">
-            <img id="image-preview" src="">
-            <button class="btn-remove-img" onclick="cancelarSubida()"><i class="fas fa-times"></i></button>
-        </div>
-
-        <div class="chat-input-wrapper" id="input-wrapper-cliente">
-            <label for="input-comprobante" class="attach-btn">
-                <i class="fas fa-image"></i>
-                <input type="file" id="input-comprobante" hidden accept="image/*" onchange="previewImage(event)">
-            </label>
-            <input type="text" id="mensaje-texto" placeholder="Escribe un mensaje..." onkeyup="if(event.key==='Enter') enviarMensaje()">
-            <button class="send-btn" onclick="enviarMensaje()">
-                <i class="fas fa-paper-plane"></i>
-            </button>
         </div>
     </div>
-</div>
+    
+    <!-- MODAL DE CALIFICACIÓN -->
+    <div id="modal-calificacion" class="modal-chat-overlay" style="display: none;">
+        <div class="modal-chat-content rating-modal">
+            <div class="modal-chat-header">
+                <div class="tienda-info">
+                    <span>Calificar Pedido</span>
+                    <small>Cuéntanos tu experiencia</small>
+                </div>
+                <button class="close-modal" onclick="cerrarModalCalificacion()">&times;</button>
+            </div>
+
+            <div class="rating-body">
+                <div class="stars-picker">
+                    <i class="far fa-star star" onclick="setRating(1)"></i>
+                    <i class="far fa-star star" onclick="setRating(2)"></i>
+                    <i class="far fa-star star" onclick="setRating(3)"></i>
+                    <i class="far fa-star star" onclick="setRating(4)"></i>
+                    <i class="far fa-star star" onclick="setRating(5)"></i>
+                </div>
+
+                <p id="rating-text" class="rating-desc">Toca una estrella para calificar</p>
+
+                <textarea id="comentario-calificacion" placeholder="¿Qué tal estuvo el sabor y la atención? (Opcional)"
+                    maxlength="255"></textarea>
+
+                <button class="btn-premium action-send" onclick="enviarCalificacion()">
+                    PUBLICAR RESEÑA
+                </button>
+                <button class="btn-flat" onclick="cerrarModalCalificacion()">Omitir por ahora</button>
+            </div>
+        </div>
     </div>
 
     <script src="../js/navegacion/MisPedidos.js"></script>
 </body>
+
 </html>

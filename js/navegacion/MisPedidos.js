@@ -1,15 +1,21 @@
 /**
  * Saborytec - Gestión de Pedidos (Lado Cliente)
- * Autores: FREDY & VICTOR
+ * Autores: FREDY
  */
+
+//const API_BASE = "https://saborytecapi-production.up.railway.app/api";
+//const STORAGE_BASE = "https://saborytecapi-production.up.railway.app/storage/";
 
 const API_BASE = "http://saborytecapi.test/api";
 const STORAGE_BASE = "http://saborytecapi.test/storage/";
+
 const token = localStorage.getItem('auth_token');
 
 let currentPedidoId = null;
 let chatInterval = null;
 let ultimoChatRenderizado = "";
+let ratingSeleccionado = 0; // Para el sistema de estrellas
+let esActualizacion = false; // Nueva bandera interna
 
 document.addEventListener('DOMContentLoaded', () => {
     if (!token) { window.location.href = 'login.html'; return; }
@@ -36,9 +42,16 @@ async function fetchMisPedidos() {
             const card = document.createElement('div');
             card.className = 'card-pedido';
             
-            const esCerrado = ['entregado', 'finalizado', 'cancelado'].includes(pedido.estado);
-            const btnLabel = pedido.estado === 'entregado' ? 'CALIFICAR SERVICIO' : 'CHAT Y COMPROBANTE';
-            const btnClass = pedido.estado === 'entregado' ? 'btn-chat entregado' : 'btn-chat';
+            const esEntregado = pedido.estado === 'entregado';
+            // CAMBIO: Si el pedido ya tiene calificación, cambiamos el texto
+            const btnLabel = esEntregado ? (pedido.calificacion ? 'ACTUALIZAR CALIFICACIÓN' : 'CALIFICAR SERVICIO') : 'CHAT Y COMPROBANTE';
+            const btnClass = esEntregado ? 'btn-chat entregado' : 'btn-chat';
+            
+            // CAMBIO: Pasamos el objeto calificacion si existe
+            const califData = pedido.calificacion ? JSON.stringify(pedido.calificacion).replace(/"/g, "'") : 'null';
+            const funcionClick = esEntregado 
+                ? `abrirModalCalificacion(${pedido.ID_pedido}, ${califData})` 
+                : `abrirChatModal(${pedido.ID_pedido}, '${nombreTienda}')`;
 
             card.innerHTML = `
                 <div class="card-header">
@@ -47,8 +60,8 @@ async function fetchMisPedidos() {
                 </div>
                 <h2 class="tienda-name">${nombreTienda}</h2>
                 <div class="order-details">Monto: <b>$${pedido.total}</b> • ${pedido.metodo_pago}</div>
-                <button class="${btnClass}" onclick="abrirChatModal(${pedido.ID_pedido}, '${nombreTienda}')">
-                    <i class="fas ${pedido.estado === 'entregado' ? 'fa-star' : 'fa-comment-dots'}"></i> ${btnLabel}
+                <button class="${btnClass}" onclick="${funcionClick}">
+                    <i class="fas ${esEntregado ? 'fa-star' : 'fa-comment-dots'}"></i> ${btnLabel}
                 </button>
             `;
             contenedor.appendChild(card);
@@ -59,13 +72,14 @@ async function fetchMisPedidos() {
 // --- LÓGICA DEL CHAT MODAL ---
 async function abrirChatModal(idPedido, nombreTienda) {
     currentPedidoId = idPedido;
-    
+    // BLOQUEA EL SCROLL DEL BODY
+    document.body.style.overflow = 'hidden';
+
     document.getElementById('chat-tienda-nombre').innerText = nombreTienda;
     document.getElementById('chat-orden-id').innerText = `Orden #${idPedido}`;
     document.getElementById('modal-chat').style.display = 'flex';
     ultimoChatRenderizado = "";
     
-    // Reset visual del input
     document.getElementById('input-wrapper-cliente').style.display = 'flex';
     const avisoPrevio = document.getElementById('aviso-bloqueo-cliente');
     if (avisoPrevio) avisoPrevio.remove();
@@ -78,13 +92,11 @@ async function abrirChatModal(idPedido, nombreTienda) {
 
 function cerrarChatModal() {
     document.getElementById('modal-chat').style.display = 'none';
+    // RESTAURA EL SCROLL NORMAL DEL HTML
+    document.body.style.overflow = '';
     if (chatInterval) clearInterval(chatInterval);
 }
 
-/**
- * CARGAR MENSAJES Y VERIFICAR ESTADO
- * Usa la ruta index de ChatController que Fredy actualizó con 'estado_pedido'
- */
 async function cargarMensajes() {
     if (!currentPedidoId) return;
     try {
@@ -95,10 +107,8 @@ async function cargarMensajes() {
         const data = await response.json();
         
         if (data.status === 'success') {
-            // 1. Bloqueo de UI si el pedido ya fue cerrado/entregado
             gestionarInterfazBloqueo(data.estado_pedido);
 
-            // 2. Renderizar mensajes solo si hay algo nuevo
             const hashMensajes = JSON.stringify(data.mensajes);
             if (hashMensajes !== ultimoChatRenderizado) {
                 ultimoChatRenderizado = hashMensajes;
@@ -108,12 +118,8 @@ async function cargarMensajes() {
     } catch (e) { console.error("Error al sincronizar chat:", e); }
 }
 
-/**
- * Gestiona si el input debe estar visible o si se muestra el aviso de bloqueo
- */
 function gestionarInterfazBloqueo(estado) {
     const inputWrapper = document.getElementById('input-wrapper-cliente'); 
-    // Si no tienes modal-footer-chat, usamos el contenedor del modal
     const footer = document.querySelector('.modal-chat-content'); 
     const estadosCierre = ['entregado', 'finalizado', 'cancelado'];
 
@@ -123,7 +129,7 @@ function gestionarInterfazBloqueo(estado) {
         if (!document.getElementById('aviso-bloqueo-cliente')) {
             const aviso = document.createElement('div');
             aviso.id = 'aviso-bloqueo-cliente';
-            aviso.className = 'aviso-bloqueo'; // Puedes darle estilos en CSS
+            aviso.className = 'aviso-bloqueo'; 
             aviso.style.cssText = "width:100%; text-align:center; padding:20px; background:rgba(0,0,0,0.2); border-radius:15px; margin-top:10px;";
             
             if (estado === 'entregado') {
@@ -131,7 +137,7 @@ function gestionarInterfazBloqueo(estado) {
                     <div style="color: #34c759; font-weight: bold; margin-bottom: 10px;">
                         <i class='fas fa-check-circle'></i> ¡DISFRUTA TU COMIDA!
                     </div>
-                    <button class="btn-chat entregado" style="width:100%" onclick="alert('Próximamente calificar')">
+                    <button class="btn-chat entregado" style="width:100%" onclick="abrirModalCalificacion(${currentPedidoId})">
                         CALIFICAR SERVICIO
                     </button>`;
             } else {
@@ -175,6 +181,83 @@ function renderizarMensajes(mensajes) {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+// --- LÓGICA DE CALIFICACIÓN ---
+function abrirModalCalificacion(idPedido, califObj = null) {
+    currentPedidoId = idPedido;
+    esActualizacion = !!califObj; // Si llega objeto, es actualización
+    
+    cerrarChatModal(); 
+    document.getElementById('modal-calificacion').style.display = 'flex';
+    
+    if (esActualizacion) {
+        document.getElementById('comentario-calificacion').value = califObj.comentario || "";
+        setRating(califObj.puntuacion);
+    } else {
+        document.getElementById('comentario-calificacion').value = "";
+        setRating(0);
+    }
+}
+
+function cerrarModalCalificacion() {
+    document.getElementById('modal-calificacion').style.display = 'none';
+     document.body.style.overflow = '';
+}
+
+function setRating(n) {
+    ratingSeleccionado = n;
+    const estrellas = document.querySelectorAll('.star');
+    estrellas.forEach((s, index) => {
+        if (index < n) {
+            s.classList.replace('far', 'fas');
+            s.style.color = "#ffcc00";
+        } else {
+            s.classList.replace('fas', 'far');
+            s.style.color = "#666";
+        }
+    });
+}
+
+async function enviarCalificacion() {
+    if (ratingSeleccionado === 0) {
+        alert("Por favor, selecciona una puntuación.");
+        return;
+    }
+
+    const comentario = document.getElementById('comentario-calificacion').value.trim();
+    // CAMBIO: Definir método y URL dinámicamente
+    const method = esActualizacion ? 'PUT' : 'POST';
+    const url = esActualizacion ? `${API_BASE}/cliente/calificaciones/${currentPedidoId}` : `${API_BASE}/cliente/calificaciones`;
+
+    try {
+        const response = await fetch(url, {
+            method: method,
+            headers: { 
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                ID_pedido: currentPedidoId,
+                puntuacion: ratingSeleccionado,
+                comentario: comentario
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert(esActualizacion ? "¡Calificación actualizada con éxito!" : "¡Gracias por calificar tu pedido!");
+            cerrarModalCalificacion();
+            fetchMisPedidos(); 
+        } else {
+            alert(data.message || "Error al calificar.");
+        }
+    } catch (e) {
+        console.error(e);
+        alert("Error de conexión al calificar.");
+    }
+}
+
 // --- FUNCIONES DE ENVÍO ---
 async function enviarMensaje() {
     const msgInput = document.getElementById('mensaje-texto');
@@ -187,7 +270,7 @@ async function enviarMensaje() {
     formData.append('mensaje', msgInput.value.trim());
     if (fileInput.files[0]) formData.append('archivo', fileInput.files[0]);
 
-    msgInput.disabled = true; // Bloqueo temporal mientras envía
+    msgInput.disabled = true;
 
     try {
         const response = await fetch(`${API_BASE}/cliente/pedidos/mensajes`, {
@@ -228,10 +311,13 @@ function logout() {
     window.location.href = 'login.html'; 
 }
 
-// Exportación global
 window.logout = logout;
 window.enviarMensaje = enviarMensaje;
 window.cerrarChatModal = cerrarChatModal;
 window.previewImage = previewImage;
 window.cancelarSubida = cancelarSubida;
 window.abrirChatModal = abrirChatModal;
+window.abrirModalCalificacion = abrirModalCalificacion;
+window.cerrarModalCalificacion = cerrarModalCalificacion;
+window.setRating = setRating;
+window.enviarCalificacion = enviarCalificacion;

@@ -1,7 +1,10 @@
 /**
  * Explorar.js - Lógica para Catálogo de Productos Saborytec
- * Desarrollado por: FREDY & VICTOR
+ * Desarrollado por: FREDY
  */
+
+//const API_URL = "https://saborytecapi-production.up.railway.app/api/cliente";
+//const STORAGE_URL = "https://saborytecapi-production.up.railway.app/storage/";
 
 const API_URL = "http://saborytecapi.test/api/cliente";
 const STORAGE_URL = "http://saborytecapi.test/storage/";
@@ -171,8 +174,15 @@ function renderizarProductos(productos, grid) {
     grid.innerHTML = productos.map(p => {
         const imgPath = p.imagen ? `${STORAGE_URL}productos/${p.imagen}` : '../Assets/img/default-product.png';
         
+        // 1. Lógica de disponibilidad
+        const estaAgotado = parseInt(p.disponible) === 0;
+        const btnClass = estaAgotado ? 'btn-order btn-disabled' : 'btn-order';
+        const btnAccion = estaAgotado ? 'disabled' : `onclick="agregarAlCarrito(${p.ID_producto})"`;
+        const btnTexto = estaAgotado ? 'Agotado' : '<i class="fas fa-plus"></i> Agregar';
+        const cardStyle = estaAgotado ? 'opacity: 0.6; filter: grayscale(1);' : '';
+
         return `
-            <article class="food-card">
+            <article class="food-card" style="${cardStyle}">
                 <div class="food-image-badge">
                     <span class="badge-tipo">${p.nombre_categoria || 'General'}</span>
                     <img src="${imgPath}" alt="${p.nombre}" onerror="this.src='../Assets/img/default-product.png'">
@@ -184,8 +194,8 @@ function renderizarProductos(productos, grid) {
                     <p class="food-desc">${p.descripcion ? p.descripcion.substring(0, 65) + '...' : 'Sin descripción disponible.'}</p>
                     <div class="food-footer">
                         <span class="food-price">$${parseFloat(p.precio).toFixed(2)}</span>
-                        <button onclick="agregarAlCarrito(${p.ID_producto})" class="btn-order">
-                             <i class="fas fa-plus"></i> Agregar
+                        <button ${btnAccion} class="${btnClass}">
+                             ${btnTexto}
                         </button>
                     </div>
                 </div>

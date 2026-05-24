@@ -1,6 +1,6 @@
 /**
  * Saborytec - Gestión de Productos Pendientes (Admin)
- * Desarrollado por: FREDY & VICTOR
+ * Desarrollado por: FREDY 
  */
 
 {
@@ -145,8 +145,15 @@
                 <tr id="producto-${p.ID_producto}" class="fade-in-row">
                     <td>
                         ${p.imagen 
-                            ? `<img src="http://saborytecapi.test/storage/productos/${p.imagen}" width="45" height="45" style="border-radius:8px; object-fit: cover;" alt="P">`
-                            : '<span class="tag-vacio">N/A</span>'}
+    ? (() => {
+        const img = p.imagen.trim().replace(/^\/+/, '');
+        const url = img.startsWith('http')
+            ? img
+            //: `https://saborytecapi-production.up.railway.app/storage/productos/${img}`;
+            : `http://saborytecapi.test/storage/productos/${img}`;
+        return `<img src="${url}" width="45" height="45" style="border-radius:8px; object-fit: cover;" alt="P">`;
+    })()
+    : '<span class="tag-vacio">N/A</span>'}
                     </td>
                     <td><strong>${p.nombre}</strong></td>
                     <td>${p.marca || '-'}</td>

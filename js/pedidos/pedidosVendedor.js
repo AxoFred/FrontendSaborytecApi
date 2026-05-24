@@ -3,6 +3,7 @@
  * Autores: FREDY & VICTOR
  */
 
+//const API_URL_PEDIDOS = "https://saborytecapi-production.up.railway.app/api/vendedor/pedidos";
 const API_URL_PEDIDOS = "http://saborytecapi.test/api/vendedor/pedidos";
 let todosLosPedidos = [];
 
@@ -43,15 +44,36 @@ async function mostrarSeccionPedidos() {
                     </button>
                 </header>
 
+                <div id="detalle-productos-pedido" class="detalle-productos-pedido"></div>
+
                 <div id="chat-mensajes-container" class="chat-body"></div>
 
                 <footer class="modal-footer-chat" id="chat-footer-vendedor">
                     <div id="contenedor-accion-pago"></div>
                     <div id="input-wrapper-vendedor" class="input-chat-wrapper">
-                        <input type="text" id="input-mensaje-vendedor" placeholder="Escribe un mensaje...">
+
+                        <label for="input-imagen-chat" class="btn-img-chat">
+                            <i class='bx bx-image-add'></i>
+                        </label>
+
+                        <input 
+                            type="file" 
+                            id="input-imagen-chat" 
+                            accept="image/*"
+                            style="display:none;"
+                            onchange="enviarImagenAutomatica(event)"
+                        >
+
+                        <input 
+                            type="text" 
+                            id="input-mensaje-vendedor" 
+                            placeholder="Escribe un mensaje..."
+                        >
+
                         <button onclick="enviarMensajeVendedor()" class="btn-send-chat">
                             <i class='bx bxs-send'></i>
                         </button>
+
                     </div>
                 </footer>
             </div>
@@ -183,6 +205,36 @@ async function abrirChatVendedor(idPedido) {
 
       const pedido = await resPedido.json();
 
+      const contenedorProductos = document.getElementById("detalle-productos-pedido");
+
+      const productosHTML = pedido.detalles.map(det => {
+      const nombre = det.producto?.nombre || "Producto";
+      const cantidad = det.cantidad || 1;
+      const precioUnitario = det.precio_unitario || 0;
+      const subtotal = det.subtotal || (cantidad * precioUnitario);
+
+      return `
+        <div class="producto-item-pedido" draggable="false">
+            <strong style="font-size:0.7rem; pointer-events:none;">${det.cantidad}x ${det.producto?.nombre}</strong>
+            <small style="font-size:0.6rem; opacity:0.7; pointer-events:none;">$${det.precio_unitario} c/u</small>
+            <span style="font-size:0.7rem; font-weight:bold; color:#deff9a; pointer-events:none;">$${det.subtotal}</span>
+        </div>
+    `;
+  }).join('');
+      
+  const totalPedido = pedido.detalles.reduce((acc, det) => acc + (parseFloat(det.subtotal) || 0), 0);
+      contenedorProductos.innerHTML = `
+          <div class="productos-header">
+              <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                  <span><i class='bx bx-shopping-bag'></i> Pedido</span>
+                  <span class="total-badge">Total: $${totalPedido.toFixed(2)}</span>
+              </div>
+          </div>
+          <div class="productos-lista-chips">
+              ${productosHTML}
+          </div>
+      `;
+
       document.getElementById("chat-cliente-nombre").innerText = pedido.usuario
         ? pedido.usuario.name || pedido.usuario.nombre
         : "Cliente";
@@ -198,6 +250,7 @@ async function abrirChatVendedor(idPedido) {
       }
 
       const resChat = await fetch(
+        //`https://saborytecapi-production.up.railway.app/api/chat/${idPedido}`,
         `http://saborytecapi.test/api/chat/${idPedido}`,
         {
           headers: {
@@ -225,13 +278,22 @@ async function abrirChatVendedor(idPedido) {
             ? "background: #deff9a; color: #000; align-self: flex-end; border-radius: 18px 18px 0 18px; margin-left: auto; padding: 12px; margin-bottom: 10px; max-width: 85%;"
             : "background: rgba(255,255,255,0.1); color: #fff; align-self: flex-start; border-radius: 18px 18px 18px 0; margin-right: auto; padding: 12px; margin-bottom: 10px; max-width: 85%;";
 
-          if (msj.archivo_path) {
+          /*if (msj.archivo_path) {
             div.innerHTML += `
                             <div class="comprobante-chat">
-                                <img src="http://saborytecapi.test/storage/${msj.archivo_path}" 
+                                <img src="https://saborytecapi-production.up.railway.app/storage/${msj.archivo_path}"
+                                
                                      style="width:100%; border-radius:10px; margin-bottom:5px; cursor:pointer;" 
                                      onclick="window.open(this.src)">
                             </div>`;
+          }*/
+         if (msj.archivo_path) {
+              div.innerHTML += `
+                  <div class="comprobante-chat">
+                      <img src="http://saborytecapi.test/storage/${msj.archivo_path}" 
+                          class="img-comprobante" 
+                          onclick="window.open(this.src)">
+                  </div>`;
           }
 
           if (msj.mensaje) {
@@ -262,23 +324,33 @@ async function abrirChatVendedor(idPedido) {
       // --- LÓGICA DINÁMICA DE BOTONES ---
       const contenedorAccion = document.getElementById("contenedor-accion-pago");
 
-      if (pedido.estado === "validando") {
-        contenedorAccion.innerHTML = `
-                    <button class="btn-validar-pago-full" onclick="validarPedidoVendedor(${pedido.ID_pedido})">
-                        <i class='bx bx-check-shield'></i> CONFIRMAR PAGO Y EMPEZAR
-                    </button>`;
-      } else if (pedido.estado === "preparacion" || pedido.estado === "listo") {
-        contenedorAccion.innerHTML = `
-                    <button class="btn-entregar-pedido-full" onclick="entregarPedidoVendedor(${pedido.ID_pedido})" style="background: #007aff; color: white; width: 100%; padding: 12px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; margin-bottom: 10px;">
-                        <i class='bx bx-package'></i> MARCAR COMO ENTREGADO
-                    </button>`;
-      } else if (pedido.estado === "entregado") {
-        contenedorAccion.innerHTML = `
-                    <div style="text-align:center; padding:10px; background: rgba(52, 199, 89, 0.1); border-radius: 10px; color: #34c759; font-weight: bold; margin-bottom:10px;">
-                        <i class='bx bx-check-circle'></i> PEDIDO ENTREGADO - CHAT CERRADO
-                    </div>`;
+      // 1. Identificamos los estados iniciales (Efectivo = 'pendiente', Transferencia = 'validando')
+      const esEstadoInicial = ['pendiente', 'validando'].includes(pedido.estado);
+
+      if (esEstadoInicial) {
+          // Si es pendiente, el vendedor solo confirma. Si es validando, se entiende que es transferencia.
+          const esEfectivo = pedido.metodo_pago === 'efectivo';
+          
+          contenedorAccion.innerHTML = `
+              <button class="btn-validar-pago-full" onclick="validarPedidoVendedor(${pedido.ID_pedido})">
+                  <i class='bx bx-check-shield'></i> ${esEfectivo ? 'CONFIRMAR PEDIDO Y EMPEZAR' : 'VALIDAR COMPROBANTE Y EMPEZAR'}
+              </button>`;
+      } 
+      // 2. Estados donde el pedido ya está en cocina o listo
+      else if (['preparacion', 'listo'].includes(pedido.estado)) {
+          contenedorAccion.innerHTML = `
+              <button class="btn-entregar-pedido-full" onclick="entregarPedidoVendedor(${pedido.ID_pedido})" style="background: #007aff; color: white; width: 100%; padding: 12px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; margin-bottom: 10px;">
+                  <i class='bx bx-package'></i> MARCAR COMO ENTREGADO
+              </button>`;
+      } 
+      // 3. Estados finales bloqueados
+      else if (['entregado', 'finalizado', 'cancelado'].includes(pedido.estado)) {
+          contenedorAccion.innerHTML = `
+              <div style="text-align:center; padding:10px; background: rgba(52, 199, 89, 0.1); border-radius: 10px; color: #34c759; font-weight: bold; margin-bottom:10px;">
+                  <i class='bx bx-check-circle'></i> PEDIDO ${pedido.estado.toUpperCase()}
+              </div>`;
       } else {
-        contenedorAccion.innerHTML = "";
+          contenedorAccion.innerHTML = "";
       }
 
     } catch (error) {
@@ -361,11 +433,16 @@ function configurarFiltros() {
     btn.onclick = () => {
       botones.forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
+      
       const estado = btn.getAttribute("data-estado");
-      const filtrados =
-        estado === "todos"
-          ? todosLosPedidos
-          : todosLosPedidos.filter((p) => p.estado === estado);
+      
+      const filtrados = estado === "todos"
+        ? todosLosPedidos
+        : (estado === "validando" 
+            // Si el estado es "validando", incluimos tanto "validando" como "pendiente"
+            ? todosLosPedidos.filter((p) => p.estado === "validando" || p.estado === "pendiente")
+            : todosLosPedidos.filter((p) => p.estado === estado));
+            
       renderizarGrid(filtrados);
     };
   });
@@ -373,54 +450,204 @@ function configurarFiltros() {
 
 /**
  * Envía un mensaje (con validación de input)
+ * //const response = await fetch(`https://saborytecapi-production.up.railway.app/api/vendedor/pedidos/${idPedido}/mensajes`, {
  */
 async function enviarMensajeVendedor() {
-  const input = document.getElementById("input-mensaje-vendedor");
-  if (input.disabled) return; // Evitar envíos si el chat ya está bloqueado
 
-  const mensaje = input.value.trim();
-  const idPedido = document.getElementById("chat-orden-id").innerText.replace("ORDEN #", "");
-  const token = localStorage.getItem("auth_token");
+    const input = document.getElementById("input-mensaje-vendedor");
+    const inputImagen = document.getElementById("input-imagen-chat");
 
-  if (!mensaje) return;
-  input.disabled = true;
+    if (input.disabled) return;
 
-  try {
-    const response = await fetch(`http://saborytecapi.test/api/vendedor/pedidos/${idPedido}/mensajes`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({ mensaje: mensaje }),
-      },
-    );
+    const mensaje = input.value.trim();
+    const imagen = inputImagen.files[0];
 
-    const res = await response.json();
+    const idPedido = document
+        .getElementById("chat-orden-id")
+        .innerText.replace("ORDEN #", "");
 
-    if (response.status === 201) {
-      const container = document.getElementById("chat-mensajes-container");
-      const div = document.createElement("div");
-      div.className = "mensaje-vendedor";
-      div.style.cssText = "background: #deff9a; color: #000; align-self: flex-end; border-radius: 18px 18px 0 18px; margin-left: auto; padding: 12px; margin-bottom: 10px; max-width: 85%; font-size: 0.9rem;";
-      div.innerHTML = `<span>${mensaje}</span>`;
-      container.appendChild(div);
-      container.scrollTop = container.scrollHeight;
-      input.value = "";
-    } else if (response.status === 403) {
-        alert("El chat ya está cerrado para este pedido.");
-        input.parentElement.style.display = "none";
+    const token = localStorage.getItem("auth_token");
+
+    // Debe existir texto o imagen
+    if (!mensaje && !imagen) return;
+
+    input.disabled = true;
+
+    try {
+
+        const formData = new FormData();
+
+        formData.append("mensaje", mensaje);
+
+        if (imagen) {
+            formData.append("archivo", imagen);
+        }
+
+        const response = await fetch(
+            `http://saborytecapi.test/api/vendedor/pedidos/${idPedido}/mensajes`,
+            {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: "application/json",
+                },
+                body: formData,
+            }
+        );
+
+        const res = await response.json();
+
+        if (response.status === 201) {
+
+            const container = document.getElementById("chat-mensajes-container");
+
+            const div = document.createElement("div");
+
+            div.className = "mensaje-vendedor";
+
+            div.style.cssText = `
+                background: #deff9a;
+                color: #000;
+                align-self: flex-end;
+                border-radius: 18px 18px 0 18px;
+                margin-left: auto;
+                padding: 12px;
+                margin-bottom: 10px;
+                max-width: 85%;
+                font-size: 0.9rem;
+            `;
+
+            let contenido = "";
+
+            // Mostrar imagen instantáneamente
+            if (imagen) {
+
+                const imageURL = URL.createObjectURL(imagen);
+
+                contenido += `
+                    <div class="comprobante-chat">
+                        <img 
+                            src="${imageURL}" 
+                            class="img-comprobante"
+                            onclick="window.open(this.src)"
+                        >
+                    </div>
+                `;
+            }
+
+            // Mostrar texto
+            if (mensaje) {
+
+                contenido += `
+                    <span>${mensaje}</span>
+                `;
+            }
+
+            div.innerHTML = contenido;
+
+            container.appendChild(div);
+
+            container.scrollTop = container.scrollHeight;
+
+            input.value = "";
+            inputImagen.value = "";
+
+        } else if (response.status === 403) {
+
+            alert("El chat ya está cerrado para este pedido.");
+
+            input.parentElement.style.display = "none";
+        }
+
+    } catch (error) {
+
+        console.error("Error de conexión:", error);
+
+    } finally {
+
+        input.disabled = false;
+
+        input.focus();
     }
-  } catch (error) {
-    console.error("Error de conexión:", error);
-  } finally {
-    input.disabled = false;
-    input.focus();
-  }
+}
+async function enviarImagenAutomatica(event) {
+
+    const archivo = event.target.files[0];
+
+    if (!archivo) return;
+
+    const idPedido = document
+        .getElementById("chat-orden-id")
+        .innerText.replace("ORDEN #", "");
+
+    const token = localStorage.getItem("auth_token");
+
+    try {
+
+        const formData = new FormData();
+
+        formData.append("archivo", archivo);
+
+        const response = await fetch(
+            `http://saborytecapi.test/api/vendedor/pedidos/${idPedido}/mensajes`,
+            {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    Accept: "application/json",
+                },
+                body: formData,
+            }
+        );
+
+        if (response.status === 201) {
+
+            const container = document.getElementById("chat-mensajes-container");
+
+            const div = document.createElement("div");
+
+            div.className = "mensaje-vendedor";
+
+            div.style.cssText = `
+                background: #deff9a;
+                color: #000;
+                align-self: flex-end;
+                border-radius: 18px 18px 0 18px;
+                margin-left: auto;
+                padding: 12px;
+                margin-bottom: 10px;
+                max-width: 85%;
+            `;
+
+            const imageURL = URL.createObjectURL(archivo);
+
+            div.innerHTML = `
+                <div class="comprobante-chat">
+                    <img 
+                        src="${imageURL}" 
+                        class="img-comprobante"
+                        onclick="window.open(this.src)"
+                    >
+                </div>
+            `;
+
+            container.appendChild(div);
+
+            container.scrollTop = container.scrollHeight;
+        }
+
+    } catch (error) {
+
+        console.error("Error enviando imagen:", error);
+
+    } finally {
+
+        event.target.value = "";
+    }
 }
 
 // Globalización
+window.enviarImagenAutomatica = enviarImagenAutomatica;
 window.enviarMensajeVendedor = enviarMensajeVendedor;
 window.mostrarSeccionPedidos = mostrarSeccionPedidos;
 window.cerrarModalChat = cerrarModalChat;

@@ -39,42 +39,42 @@
     </main>
 
     <div id="modal-pago" class="modal-overlay">
-        <div class="modal-content animate-slide-up">
-            <button class="close-modal" onclick="cerrarModal()" style="position: absolute; right: 20px; top: 15px; background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">&times;</button>
+    <div class="modal-content animate-slide-up">
+        <button class="close-modal" onclick="cerrarModal()" style="position: absolute; right: 20px; top: 15px; background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">&times;</button>
+        
+        <h2 style="font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 1px; color: white;">FINALIZAR PEDIDO</h2>
+        <p style="color: #888; margin-bottom: 25px; font-size: 0.9rem;">Selecciona tu método de pago para continuar</p>
+
+        <div class="metodos-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+            <label class="metodo-option" style="cursor: pointer;">
+                <input type="radio" name="metodo" value="efectivo" checked onclick="toggleMetodoPago('efectivo')" style="display: none;">
+                <div class="metodo-box">
+                    <i class="fas fa-money-bill-wave" style="display: block; margin-bottom: 10px; font-size: 1.2rem;"></i>
+                    <span>Efectivo</span>
+                </div>
+            </label>
             
-            <h2 style="font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 1px;">FINALIZAR PEDIDO</h2>
-            <p style="color: #888; margin-bottom: 25px; font-size: 0.9rem;">Selecciona tu método de pago para continuar</p>
-
-            <div class="metodos-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
-                <label class="metodo-option" style="cursor: pointer;">
-                    <input type="radio" name="metodo" value="efectivo" checked onclick="toggleMetodoPago('efectivo')" style="display: none;">
-                    <div class="metodo-box" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; border: 2px solid transparent; transition: 0.3s; text-align: center;">
-                        <i class="fas fa-money-bill-wave" style="display: block; margin-bottom: 10px; font-size: 1.2rem;"></i>
-                        <span>Efectivo</span>
-                    </div>
-                </label>
-                
-                <label class="metodo-option" style="cursor: pointer;">
-                    <input type="radio" name="metodo" value="transferencia" onclick="toggleMetodoPago('transferencia')" style="display: none;">
-                    <div class="metodo-box" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; border: 2px solid transparent; transition: 0.3s; text-align: center;">
-                        <i class="fas fa-university" style="display: block; margin-bottom: 10px; font-size: 1.2rem;"></i>
-                        <span>Transferencia</span>
-                    </div>
-                </label>
-            </div>
-
-            <div id="info-bancaria" style="display: none; background: rgba(55, 96, 114, 0.1); border: 1px solid rgba(55, 96, 114, 0.3); padding: 15px; border-radius: 12px; text-align: left; margin-bottom: 20px; font-size: 0.85rem; line-height: 1.6;">
-                <p style="margin: 0;"><strong>Banco:</strong> BBVA</p>
-                <p style="margin: 0;"><strong>Titular:</strong> Cafetería ITSSMT</p>
-                <p style="margin: 0;"><strong>CLABE:</strong> 0123 4567 8901 2345 67</p>
-                <p style="margin-top: 5px; color: #376072; font-size: 0.75rem;">* Deberás subir tu comprobante en la siguiente pantalla.</p>
-            </div>
-
-            <button class="btn-finalizar" onclick="finalizarPedido()" style="width: 100%; background: #376072; color: white; border: none; padding: 16px; border-radius: 14px; font-weight: 800; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;">
-                Confirmar y Ver Pedido
-            </button>
+            <label class="metodo-option" style="cursor: pointer;">
+                <input type="radio" name="metodo" value="transferencia" onclick="toggleMetodoPago('transferencia')" style="display: none;">
+                <div class="metodo-box">
+                    <i class="fas fa-university" style="display: block; margin-bottom: 10px; font-size: 1.2rem;"></i>
+                    <span>Transferencia</span>
+                </div>
+            </label>
         </div>
+
+        <div id="info-bancaria" style="display: none; background: rgba(55, 96, 114, 0.1); border: 1px solid rgba(55, 96, 114, 0.3); padding: 15px; border-radius: 12px; text-align: left; margin-bottom: 20px; font-size: 0.85rem; line-height: 1.6; color: white;">
+            <p style="margin: 0;"><strong>Banco:</strong> <span id="txt-banco" style="color: #03b3ff;">---</span></p>
+            <p style="margin: 0;"><strong>Titular:</strong> <span id="txt-titular">---</span></p>
+            <p style="margin: 0;"><strong>CLABE:</strong> <span id="txt-clabe" style="letter-spacing: 1px;">---</span></p>
+            <p style="margin-top: 5px; color: #376072; font-size: 0.75rem;">* Deberás subir tu comprobante en la siguiente pantalla.</p>
+        </div>
+
+        <button class="btn-finalizar" onclick="finalizarPedido()" style="width: 100%; background: #376072; color: white; border: none; padding: 16px; border-radius: 14px; font-weight: 800; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;">
+            Confirmar y Ver Pedido
+        </button>
     </div>
+</div>
 
     <script src="../js/navegacion/carrito.js"></script>
 </body>

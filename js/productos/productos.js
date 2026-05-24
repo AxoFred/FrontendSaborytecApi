@@ -1,12 +1,13 @@
 /**
  * Saborytec - Gestión de Productos (Vendedor)
- * Versión Final Optimizada y Consolidada
- * Desarrollado por: FREDY & VICTOR
+ * Desarrollado por: FREDY 
  */
 
 {
+    //const API_BASE_PROD = "https://saborytecapi-production.up.railway.app/api";
+    //const STORAGE_URL = "https://saborytecapi-production.up.railway.app/storage/productos/"; 
     const API_BASE_PROD = "http://saborytecapi.test/api";
-    const STORAGE_URL = "http://saborytecapi.test/storage/productos/";
+    const STORAGE_URL = "http://saborytecapi.test/storage/productos/"; 
     let productosGlobal = [];
 
     // --- Configuración de Peticiones ---
@@ -39,7 +40,6 @@
                 <button class="btn-azul" onclick="prepararModal()">➕ Agregar Producto</button>
             </div>
 
-            <!-- BARRA DE FILTROS -->
             <div class="filtros-container fade-in-row">
                 <div class="filter-group">
                     <label class="filter-label">Nombre / Marca</label>
@@ -83,7 +83,6 @@
                 </table>
             </div>
 
-            <!-- MODAL ÚNICO (CREAR/EDITAR) -->
             <div class="modal" id="modalProduct">${renderFormHTML()}</div>
         `;
 
@@ -157,7 +156,7 @@
                     <td class="text-ellipsis">${p.descripcion || '-'}</td>
                     <td style="color:var(--primary); font-weight:800;">$${parseFloat(p.precio).toFixed(2)}</td>
                     <td>${p.nombre_categoria || 'General'}</td>
-                    <td><span class="rol-badge status-${estadoReal.toLowerCase()}">${estadoReal}</span></td>
+                    <td><span class="rol-badge status-${estadoReal.toLowerCase().trim()}">${estadoReal}</span></td>
                     <td>
                         <label class="switch">
                             <input type="checkbox" ${parseInt(p.disponible) === 1 ? 'checked' : ''} ${!esAprobado ? 'disabled' : ''} 
