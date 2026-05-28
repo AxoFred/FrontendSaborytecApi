@@ -219,7 +219,7 @@ async function guardarCambiosRapidos() {
     try {
         const resultados = await Promise.all(promesas);
         if (resultados.some(res => !res.ok)) throw new Error();
-        alert("✅ Horarios actualizados.");
+        alert(" Horarios actualizados.");
         obtenerHorarios();
     } catch (error) {
         alert("Hubo un error en la actualización masiva.");

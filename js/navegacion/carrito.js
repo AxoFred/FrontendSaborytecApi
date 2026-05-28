@@ -4,11 +4,11 @@
  */
 
 // 1. CONFIGURACIÓN GLOBAL
-//const API_URL = "https://saborytecapi-production.up.railway.app/api/cliente";
-//const BACKEND_URL = "https://saborytecapi-production.up.railway.app";
+const API_URL = "https://saborytecapi-production.up.railway.app/api/cliente";
+const BACKEND_URL = "https://saborytecapi-production.up.railway.app";
 
-const API_URL = "http://saborytecapi.test/api/cliente";
-const BACKEND_URL = "http://saborytecapi.test";
+//const API_URL = "http://saborytecapi.test/api/cliente";
+//const BACKEND_URL = "http://saborytecapi.test";
 
 const RUTA_DEFAULT = "../assets/imagenes/carrito.png";
 

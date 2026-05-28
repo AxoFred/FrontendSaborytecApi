@@ -131,57 +131,132 @@
         });
     }
 
- window.exportarPDFAdmin = function() {
-        if (!datosAdminGlobal) {
-            alert("Los datos aún no se han cargado, por favor espera.");
-            return;
+window.exportarPDFAdmin = function () {
+    if (!datosAdminGlobal) {
+        alert("Los datos aún no se han cargado.");
+        return;
+    }
+
+    const data = datosAdminGlobal;
+
+    // jsPDF
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF("p", "mm", "a4");
+
+    // ===== FORMATO =====
+    const colorPrimario = [0, 122, 255];
+    const colorTexto = [29, 29, 31];
+
+    // ===== HEADER =====
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(22);
+    doc.setTextColor(...colorTexto);
+    doc.text("SABORYTEC ITSSMT", 14, 20);
+
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(120);
+    doc.text(
+        `Reporte Administrativo - ${new Date().toLocaleDateString()}`,
+        14,
+        28
+    );
+
+    // Línea decorativa
+    doc.setDrawColor(...colorPrimario);
+    doc.setLineWidth(1);
+    doc.line(14, 32, 196, 32);
+
+    // ===== RESUMEN =====
+    let y = 45;
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(14);
+    doc.setTextColor(...colorPrimario);
+    doc.text("Resumen General", 14, y);
+
+    y += 10;
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+    doc.setTextColor(...colorTexto);
+
+    doc.text(
+        `Ingresos Consolidados: $${parseFloat(data.ingresos_totales)
+            .toLocaleString('es-MX', { minimumFractionDigits: 2 })}`,
+        14,
+        y
+    );
+
+    y += 8;
+
+    doc.text(`Total de Vendedores: ${data.total_vendedores}`, 14, y);
+
+    y += 8;
+
+    doc.text(`Productos en Sistema: ${data.total_productos}`, 14, y);
+
+    y += 18;
+
+    // ===== TABLA =====
+    const filas = data.comparativa_vendedores.map((v, index) => [
+        index + 1,
+        v.nombre_vendedor,
+        `$${parseFloat(v.total_ventas).toLocaleString('es-MX', {
+            minimumFractionDigits: 2
+        })}`
+    ]);
+
+    doc.autoTable({
+        startY: y,
+
+        head: [[
+            "#",
+            "Vendedor",
+            "Total Ventas"
+        ]],
+
+        body: filas,
+
+        theme: "grid",
+
+        headStyles: {
+            fillColor: colorPrimario,
+            textColor: 255,
+            fontStyle: "bold",
+            halign: "center"
+        },
+
+        styles: {
+            font: "helvetica",
+            fontSize: 10,
+            cellPadding: 4
+        },
+
+        columnStyles: {
+            0: { halign: "center", cellWidth: 20 },
+            1: { cellWidth: 100 },
+            2: { halign: "right" }
+        },
+
+        alternateRowStyles: {
+            fillColor: [245, 245, 245]
         }
+    });
 
-        const data = datosAdminGlobal;
-        const tempDiv = document.createElement('div');
-        tempDiv.style.padding = "40px";
-        tempDiv.style.fontFamily = "sans-serif";
-        
-        // Estructura limpia para el PDF
-        tempDiv.innerHTML = `
-            <div style="border-bottom: 3px solid #007aff; padding-bottom: 20px; margin-bottom: 30px;">
-                <h1 style="margin: 0; color: #1d1d1f;">SABORYTEC <span style="font-weight: 300;">ITSSMT</span></h1>
-                <p style="color: #86868b;">Reporte Administrativo - ${new Date().toLocaleDateString()}</p>
-            </div>
-            <div style="margin-bottom: 30px;">
-                <h3 style="color: #007aff;">Resumen General</h3>
-                <p><strong>Ingresos Consolidados:</strong> $${parseFloat(data.ingresos_totales).toLocaleString('es-MX', {minimumFractionDigits: 2})}</p>
-                <p><strong>Total de Vendedores:</strong> ${data.total_vendedores}</p>
-                <p><strong>Productos en Sistema:</strong> ${data.total_productos}</p>
-            </div>
-            <table style="width: 100%; border-collapse: collapse;">
-                <tr style="background: #1d1d1f; color: white;">
-                    <th style="padding: 12px; text-align: left;">Vendedor</th>
-                    <th style="padding: 12px; text-align: right;">Total Ventas</th>
-                </tr>
-                ${data.comparativa_vendedores.map(v => `
-                    <tr style="border-bottom: 1px solid #eee;">
-                        <td style="padding: 12px;">${v.nombre_vendedor}</td>
-                        <td style="padding: 12px; text-align: right;">$${parseFloat(v.total_ventas).toLocaleString('es-MX', {minimumFractionDigits: 2})}</td>
-                    </tr>
-                `).join('')}
-            </table>
-            <div style="margin-top: 50px; text-align: center; color: #86868b; font-size: 12px;">
-                Desarrollado por: FREDY & VICTOR - Saborytec 2026
-            </div>
-        `;
+    // ===== FOOTER =====
+    const finalY = doc.lastAutoTable.finalY + 20;
 
-        // Aplicamos un pequeño delay para asegurar que el motor de renderizado tome el div creado
-        setTimeout(() => {
-            const opt = {
-                margin: 10,
-                filename: 'Saborytec_Reporte_Admin.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
+    doc.setFontSize(10);
+    doc.setTextColor(130);
 
-            html2pdf().set(opt).from(tempDiv).save();
-        }, 300);
-    };
+    doc.text(
+        "Desarrollado por: FREDY - Saborytec 2026",
+        14,
+        finalY
+    );
+
+    // ===== GUARDAR =====
+    doc.save("Saborytec_Reporte_Admin.pdf");
+};
 })();

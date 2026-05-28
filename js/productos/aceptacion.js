@@ -149,8 +149,8 @@
         const img = p.imagen.trim().replace(/^\/+/, '');
         const url = img.startsWith('http')
             ? img
-            //: `https://saborytecapi-production.up.railway.app/storage/productos/${img}`;
-            : `http://saborytecapi.test/storage/productos/${img}`;
+            : `https://saborytecapi-production.up.railway.app/storage/productos/${img}`;
+            //: `http://saborytecapi.test/storage/productos/${img}`;
         return `<img src="${url}" width="45" height="45" style="border-radius:8px; object-fit: cover;" alt="P">`;
     })()
     : '<span class="tag-vacio">N/A</span>'}

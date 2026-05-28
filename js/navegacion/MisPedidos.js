@@ -3,11 +3,11 @@
  * Autores: FREDY
  */
 
-//const API_BASE = "https://saborytecapi-production.up.railway.app/api";
-//const STORAGE_BASE = "https://saborytecapi-production.up.railway.app/storage/";
+const API_BASE = "https://saborytecapi-production.up.railway.app/api";
+const STORAGE_BASE = "https://saborytecapi-production.up.railway.app/storage/";
 
-const API_BASE = "http://saborytecapi.test/api";
-const STORAGE_BASE = "http://saborytecapi.test/storage/";
+//const API_BASE = "http://saborytecapi.test/api";
+//const STORAGE_BASE = "http://saborytecapi.test/storage/";
 
 const token = localStorage.getItem('auth_token');
 

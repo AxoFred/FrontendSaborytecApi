@@ -4,8 +4,8 @@
  */
 
 {
-    //const API_TIENDAS_URL = "https://saborytecapi-production.up.railway.app/api/tiendas"; 
-    const API_TIENDAS_URL = "http://saborytecapi.test/api/tiendas";
+    const API_TIENDAS_URL = "https://saborytecapi-production.up.railway.app/api/tiendas"; 
+    //const API_TIENDAS_URL = "http://saborytecapi.test/api/tiendas";
     let tiendaData = null; 
 
     const getAuthHeaders = (isMultipart = false) => {
@@ -67,8 +67,8 @@
         const estaPendiente = t.aprobacion === 'pendiente';
         const btnDisabled = estaPendiente ? 'disabled' : '';
 
-        //const baseStorage = "https://saborytecapi-production.up.railway.app/storage/";
-        const baseStorage = "http://saborytecapi.test/storage/";
+        const baseStorage = "https://saborytecapi-production.up.railway.app/storage/";
+        //const baseStorage = "http://saborytecapi.test/storage/";
         
         const urlPortada = t.portada 
             ? `${baseStorage}${t.portada}` 

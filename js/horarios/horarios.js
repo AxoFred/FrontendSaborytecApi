@@ -3,9 +3,9 @@
  * Desarrollado por: FREDY
  */
 
-//const API_HORARIOS = "https://saborytecapi-production.up.railway.app/api/horarios";
+const API_HORARIOS = "https://saborytecapi-production.up.railway.app/api/horarios";
 
-const API_HORARIOS = "http://saborytecapi.test/api/horarios";
+//const API_HORARIOS = "http://saborytecapi.test/api/horarios";
 let horariosGlobal = [];
 
 // ============================================================

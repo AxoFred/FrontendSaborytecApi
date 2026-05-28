@@ -4,10 +4,11 @@
  */
 
 {
-    //const API_BASE_PROD = "https://saborytecapi-production.up.railway.app/api";
-    //const STORAGE_URL = "https://saborytecapi-production.up.railway.app/storage/productos/"; 
-    const API_BASE_PROD = "http://saborytecapi.test/api";
-    const STORAGE_URL = "http://saborytecapi.test/storage/productos/"; 
+    const API_BASE_PROD = "https://saborytecapi-production.up.railway.app/api";
+    const STORAGE_URL = "https://saborytecapi-production.up.railway.app/storage/productos/"; 
+    //const API_BASE_PROD = "http://saborytecapi.test/api";
+    //const STORAGE_URL = "http://saborytecapi.test/storage/productos/"; 
+
     let productosGlobal = [];
 
     // --- Configuración de Peticiones ---

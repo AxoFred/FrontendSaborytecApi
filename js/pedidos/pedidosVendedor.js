@@ -3,8 +3,8 @@
  * Autores: FREDY & VICTOR
  */
 
-//const API_URL_PEDIDOS = "https://saborytecapi-production.up.railway.app/api/vendedor/pedidos";
-const API_URL_PEDIDOS = "http://saborytecapi.test/api/vendedor/pedidos";
+const API_URL_PEDIDOS = "https://saborytecapi-production.up.railway.app/api/vendedor/pedidos";
+//const API_URL_PEDIDOS = "http://saborytecapi.test/api/vendedor/pedidos";
 let todosLosPedidos = [];
 
 /**
@@ -250,8 +250,8 @@ async function abrirChatVendedor(idPedido) {
       }
 
       const resChat = await fetch(
-        //`https://saborytecapi-production.up.railway.app/api/chat/${idPedido}`,
-        `http://saborytecapi.test/api/chat/${idPedido}`,
+        `https://saborytecapi-production.up.railway.app/api/chat/${idPedido}`,
+        //`http://saborytecapi.test/api/chat/${idPedido}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -290,7 +290,7 @@ async function abrirChatVendedor(idPedido) {
          if (msj.archivo_path) {
               div.innerHTML += `
                   <div class="comprobante-chat">
-                      <img src="http://saborytecapi.test/storage/${msj.archivo_path}" 
+                      <img src="https://saborytecapi-production.up.railway.app/storage/${msj.archivo_path}" 
                           class="img-comprobante" 
                           onclick="window.open(this.src)">
                   </div>`;
@@ -484,7 +484,8 @@ async function enviarMensajeVendedor() {
         }
 
         const response = await fetch(
-            `http://saborytecapi.test/api/vendedor/pedidos/${idPedido}/mensajes`,
+            //`http://saborytecapi.test/api/vendedor/pedidos/${idPedido}/mensajes`,
+            `https://saborytecapi-production.up.railway.app/api/vendedor/pedidos/${idPedido}/mensajes`,
             {
                 method: "POST",
                 headers: {
@@ -589,7 +590,8 @@ async function enviarImagenAutomatica(event) {
         formData.append("archivo", archivo);
 
         const response = await fetch(
-            `http://saborytecapi.test/api/vendedor/pedidos/${idPedido}/mensajes`,
+            //`http://saborytecapi.test/api/vendedor/pedidos/${idPedido}/mensajes`,
+            `https://saborytecapi-production.up.railway.app/api/vendedor/pedidos/${idPedido}/mensajes`,
             {
                 method: "POST",
                 headers: {

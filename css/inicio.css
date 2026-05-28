@@ -177,22 +177,7 @@ body {
     color: var(--white);
 }
 
-.glass-logo.large {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(15px);
-    padding: 60px;
-    border-radius: 30px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 
-.glass-logo.large img {
-    width: 150px;
-    height: auto;
-    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
-}
 /* =========================================
    RESPONSIVE CELULAR
    ========================================= */
@@ -663,3 +648,134 @@ body {
 }
 .close-modal { position: absolute; top: 10px; right: 20px; font-size: 25px; cursor: pointer; }
 .modal-img-portada { width: 100%; height: 150px; object-fit: cover; border-radius: 15px; }
+/*============================================================
+   SABORYTEC - CSS COMPLETO: CLIMA (DARK MODE) - COMPACTO
+   Diseño por: FREDY 
+   ============================================================ */
+
+.weather-card {
+    position: relative;
+    width: 60%;
+    margin-top: 25px;
+    padding: 16px 20px; /* Reducido verticalmente */
+    border-radius: 20px;
+    overflow: hidden;
+    background: linear-gradient(145deg, rgba(15,18,24,0.95), rgba(10,12,16,0.98));
+    border: 1px solid rgba(0,255,255,0.08);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.45), 0 0 25px rgba(0,255,255,0.08);
+    z-index: 5;
+}
+
+/* Glow decorativo */
+.weather-card::before {
+    content: '';
+    position: absolute;
+    width: 150px; /* Reducido */
+    height: 150px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,255,255,0.15), transparent 70%);
+    top: -60px;
+    right: -40px;
+    z-index: 1;
+}
+
+/* Línea neon superior */
+.weather-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #00ffff, transparent);
+}
+
+/* TOP */
+.weather-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 3;
+}
+
+/* Ciudad */
+.weather-city {
+    color: #ffffff;
+    font-size: 16px; /* Ajustado */
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+
+/* Estado */
+.weather-condition {
+    color: rgba(255,255,255,0.65);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Temperatura */
+.weather-temp {
+    font-size: 52px; /* Reducido de 72px */
+    font-weight: 900;
+    color: #ffffff;
+    margin-top: 8px; /* Reducido */
+    line-height: 1;
+    letter-spacing: -2px;
+    position: relative;
+    z-index: 3;
+    text-shadow: 0 0 12px rgba(0,255,255,0.15);
+}
+
+/* Datos inferiores */
+.weather-info {
+    display: flex;
+    gap: 10px; /* Reducido */
+    margin-top: 15px; /* Reducido */
+    position: relative;
+    z-index: 3;
+}
+
+/* Pills */
+.weather-info span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px; /* Reducido verticalmente */
+    border-radius: 12px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    color: #d5dce6;
+    font-size: 12px;
+    font-weight: 700;
+    backdrop-filter: blur(8px);
+}
+
+/* Recomendación */
+.weather-recommendation {
+    margin-top: 15px; /* Reducido */
+    padding: 10px 14px; /* Reducido */
+    border-radius: 14px;
+    background: rgba(0,255,255,0.06);
+    border: 1px solid rgba(0,255,255,0.12);
+    color: #00ffff;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    position: relative;
+    z-index: 3;
+    box-shadow: inset 0 0 12px rgba(0,255,255,0.03);
+}
+
+/* Icono */
+.weather-icon {
+    width: 65px; /* Reducido de 95px */
+    height: 65px;
+    filter: drop-shadow(0 0 10px rgba(0,255,255,0.15));
+    position: relative;
+    z-index: 3;
+}

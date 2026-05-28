@@ -6,8 +6,8 @@
 // ==========================================
 // CONFIGURACIÓN Y ESTADO GLOBAL
 // ==========================================
-//const API_BASE_TIENDAS = "https://saborytecapi-production.up.railway.app/api";
-const API_BASE_TIENDAS = "http://saborytecapi.test/api";
+const API_BASE_TIENDAS = "https://saborytecapi-production.up.railway.app/api";
+//const API_BASE_TIENDAS = "http://saborytecapi.test/api";
 
 const URL_API_APROBACION = `${API_BASE_TIENDAS}/admin/tiendas`;
 
@@ -89,8 +89,8 @@ function renderTiendas(tiendas) {
     `;
 
     tiendas.forEach(t => {
-        //const baseUrl = "https://saborytecapi-production.up.railway.app";
-        const baseUrl = "http://saborytecapi.test";
+        const baseUrl = "https://saborytecapi-production.up.railway.app";
+        //const baseUrl = "http://saborytecapi.test";
 
         const logoNombre = t.logo ? t.logo.split('/').pop() : null;
         const portadaNombre = t.portada ? t.portada.split('/').pop() : null;

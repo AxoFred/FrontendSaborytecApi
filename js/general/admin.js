@@ -2,8 +2,8 @@
 // CONTROL DEL PANEL ADMIN - SABORYTEC API (SINCRONIZADO)
 // ============================================================
 
-//const API_BASE = "https://saborytecapi-production.up.railway.app/api";
-const API_BASE = "http://saborytecapi.test/api";
+const API_BASE = "https://saborytecapi-production.up.railway.app/api";
+//const API_BASE = "http://saborytecapi.test/api";
 
 
 // Helper universal para peticiones (GET, POST, etc.)

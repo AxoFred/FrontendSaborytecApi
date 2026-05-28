@@ -119,44 +119,202 @@
         `;
     }
 
-    window.generarReportePDF = function() {
-        const data = window.datosReporte;
-        
-        // Validación de seguridad para evitar errores si no hay datos cargados
-        if (!data) {
-            alert("No hay datos disponibles para exportar. Por favor, espera a que carguen.");
-            return;
+window.generarReportePDF = function () {
+
+    const data = window.datosReporte;
+
+    if (!data) {
+        alert("No hay datos disponibles para exportar.");
+        return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF("p", "mm", "a4");
+
+    // ===== CONFIG =====
+    const azul = [0, 122, 255];
+    const negro = [29, 29, 31];
+    const gris = [120, 120, 120];
+
+    // ===== HEADER =====
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(22);
+    doc.setTextColor(...negro);
+
+    doc.text("SABORYTEC", 14, 20);
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+    doc.setTextColor(...gris);
+
+    doc.text(
+        `Reporte de Rendimiento - ${new Date().toLocaleDateString('es-MX')}`,
+        14,
+        28
+    );
+
+    // Línea decorativa
+    doc.setDrawColor(...azul);
+    doc.setLineWidth(1);
+    doc.line(14, 32, 196, 32);
+
+    // ===== RESUMEN =====
+    let y = 45;
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(14);
+    doc.setTextColor(...azul);
+
+    doc.text("Resumen del Día", 14, y);
+
+    y += 10;
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+    doc.setTextColor(...negro);
+
+    const ingresos = parseFloat(data.resumen.ingresos_hoy || 0);
+
+    doc.text(
+        `Ingresos Totales: $${ingresos.toLocaleString('es-MX', {
+            minimumFractionDigits: 2
+        })}`,
+        14,
+        y
+    );
+
+    y += 8;
+
+    doc.text(
+        `Pedidos Confirmados: ${data.resumen.pedidos_hoy || 0}`,
+        14,
+        y
+    );
+
+    y += 18;
+
+    // ===== TABLA PRODUCTOS =====
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(...azul);
+    doc.text("Productos Más Vendidos", 14, y);
+
+    y += 8;
+
+    const filas = (data.top_productos || []).map((p, index) => [
+        index + 1,
+        p.nombre_producto,
+        p.total_vendido
+    ]);
+
+    doc.autoTable({
+        startY: y,
+
+        head: [[
+            "#",
+            "Producto",
+            "Ventas"
+        ]],
+
+        body: filas,
+
+        theme: "grid",
+
+        headStyles: {
+            fillColor: azul,
+            textColor: 255,
+            fontStyle: "bold",
+            halign: "center"
+        },
+
+        styles: {
+            font: "helvetica",
+            fontSize: 10,
+            cellPadding: 4
+        },
+
+        alternateRowStyles: {
+            fillColor: [245, 245, 245]
+        },
+
+        columnStyles: {
+            0: {
+                halign: "center",
+                cellWidth: 20
+            },
+
+            1: {
+                cellWidth: 120
+            },
+
+            2: {
+                halign: "center",
+                cellWidth: 40
+            }
         }
+    });
 
-        // Definimos el contenido HTML
-        const contenidoHTML = `
-            <div style="padding: 40px; font-family: sans-serif;">
-                <h1 style="color: #007aff;">Reporte Saborytec</h1>
-                <p>Fecha: ${new Date().toLocaleDateString()}</p>
-                <h3>Resumen de hoy</h3>
-                <p>Ingresos: $${parseFloat(data.resumen.ingresos_hoy).toFixed(2)}</p>
-                <p>Pedidos: ${data.resumen.pedidos_hoy}</p>
-                <h3>Top Productos</h3>
-                <table style="width:100%; border-collapse: collapse;">
-                    <thead><tr style="background:#eee;"><th style="padding:10px; text-align:left;">Producto</th><th style="padding:10px; text-align:left;">Ventas</th></tr></thead>
-                    <tbody>${data.top_productos.map(p => `<tr><td style="padding:10px; border-bottom:1px solid #ccc;">${p.nombre_producto}</td><td style="padding:10px; border-bottom:1px solid #ccc;">${p.total_vendido}</td></tr>`).join('')}</tbody>
-                </table>
-            </div>
-        `;
+    // ===== HISTORIAL SEMANAL =====
+    const finalY = doc.lastAutoTable.finalY + 15;
 
-        // Aplicamos el timer para asegurar la estabilidad del renderizado
-        setTimeout(() => {
-            html2pdf()
-                .from(contenidoHTML)
-                .set({
-                    margin: 0.5,
-                    filename: 'Reporte_Saborytec.pdf',
-                    html2canvas: { scale: 2 },
-                    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-                })
-                .save();
-        }, 500); // 500ms de espera es suficiente para que el navegador procese el bloque HTML
-    };
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(...azul);
+
+    doc.text("Ventas Últimos 7 Días", 14, finalY);
+
+    const filasSemana = (data.grafica_semanal || []).map((d) => {
+
+        const fecha = new Date(d.fecha);
+
+        return [
+            fecha.toLocaleDateString('es-MX'),
+            `$${parseFloat(d.total).toLocaleString('es-MX', {
+                minimumFractionDigits: 2
+            })}`
+        ];
+    });
+
+    doc.autoTable({
+        startY: finalY + 5,
+
+        head: [[
+            "Fecha",
+            "Ventas"
+        ]],
+
+        body: filasSemana,
+
+        theme: "striped",
+
+        headStyles: {
+            fillColor: azul
+        },
+
+        styles: {
+            fontSize: 10
+        },
+
+        columnStyles: {
+            1: {
+                halign: "right"
+            }
+        }
+    });
+
+    // ===== FOOTER =====
+    const footerY = doc.lastAutoTable.finalY + 20;
+
+    doc.setFontSize(10);
+    doc.setTextColor(...gris);
+
+    doc.text(
+        "Desarrollado por: FREDY - Saborytec 2026",
+        14,
+        footerY
+    );
+
+    // ===== EXPORTAR =====
+    doc.save("Reporte_Saborytec.pdf");
+};
 
     function inicializarGraficaVentas(datosSemana) {
         const canvas = document.getElementById('graficaVentasSemanal');

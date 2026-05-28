@@ -3,11 +3,11 @@
  * Desarrollado por: FREDY
  */
 
-//const API_URL = "https://saborytecapi-production.up.railway.app/api/cliente";
-//const STORAGE_URL = "https://saborytecapi-production.up.railway.app/storage/";
+const API_URL = "https://saborytecapi-production.up.railway.app/api/cliente";
+const STORAGE_URL = "https://saborytecapi-production.up.railway.app/storage/";
 
-const API_URL = "http://saborytecapi.test/api/cliente";
-const STORAGE_URL = "http://saborytecapi.test/storage/";
+//const API_URL = "http://saborytecapi.test/api/cliente";
+//const STORAGE_URL = "http://saborytecapi.test/storage/";
 
 // Variable para controlar el retraso de la búsqueda (Debounce)
 let timeoutBusqueda;

@@ -1,13 +1,19 @@
-//const API_URL = "https://saborytecapi-production.up.railway.app/api/cliente";
-//const STORAGE_URL = "https://saborytecapi-production.up.railway.app/storage/";
-const API_URL_CALIFICACION = "http://saborytecapi.test/api";
-const API_URL = "http://saborytecapi.test/api/cliente";
-const STORAGE_URL = "http://saborytecapi.test/storage/";
+const API_URL_CALIFICACION = "https://saborytecapi-production.up.railway.app/api";
+const API_URL = "https://saborytecapi-production.up.railway.app/api/cliente";
+const STORAGE_URL = "https://saborytecapi-production.up.railway.app/storage/";
+
+//const API_URL_CALIFICACION = "http://saborytecapi.test/api";
+//const API_URL = "http://saborytecapi.test/api/cliente";
+//const STORAGE_URL = "http://saborytecapi.test/storage/";
+
+let weather = null;
+let loadingWeather = true;
 
 document.addEventListener("DOMContentLoaded", () => {
     if (!verificarSesion()) return;
 
-    renderizarBienvenida(); 
+    renderizarBienvenida();
+    obtenerClima(); 
     cargarTiendas();
     cargarProductosDestacados();
 });
@@ -36,7 +42,108 @@ function renderizarBienvenida() {
     const welcomeEl = document.getElementById("user-welcome");
     if (welcomeEl) welcomeEl.innerText = `Hola, ${userName}`;
 }
+function renderizarClima() {
 
+    const welcomeSection = document.querySelector('.welcome-banner');
+
+    if (!welcomeSection || !weather) return;
+
+    const climaHTML = `
+    
+    <div class="weather-card">
+
+        <div class="weather-top">
+
+            <div>
+
+                <p class="weather-city">
+                    📍 ${weather.city}
+                </p>
+
+                <p class="weather-condition">
+                    ${weather.condition}
+                </p>
+
+            </div>
+
+            <img 
+                src="${weather.icon}"
+                class="weather-icon"
+            >
+
+        </div>
+
+        <h1 class="weather-temp">
+            ${weather.temperature}°C
+        </h1>
+
+        <div class="weather-info">
+
+            <span>
+                💧 ${weather.humidity}%
+            </span>
+
+            <span>
+                ☔ ${weather.chance_of_rain}%
+            </span>
+
+        </div>
+
+        <div class="weather-recommendation">
+            ${weather.recommendation}
+        </div>
+
+    </div>
+    `;
+
+    welcomeSection.insertAdjacentHTML('beforeend', climaHTML);
+}
+async function obtenerClima() {
+
+    try {
+
+        navigator.geolocation.getCurrentPosition(
+
+            async (position) => {
+
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+
+                const response = await fetch(
+                    `https://saborytecapi-production.up.railway.app/api/weather?lat=${lat}&lon=${lon}`
+                );
+
+                const data = await response.json();
+
+                if (data.success) {
+
+                    weather = data;
+
+                    renderizarClima();
+
+                }
+
+                loadingWeather = false;
+            },
+
+            (error) => {
+
+                console.log(error);
+
+                loadingWeather = false;
+
+            }
+
+        );
+
+    } catch (error) {
+
+        console.log(error);
+
+        loadingWeather = false;
+
+    }
+}
 async function cargarTiendas() {
     const grid = document.getElementById("stores-grid");
     if (!grid) return;
